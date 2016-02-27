@@ -1,5 +1,7 @@
 package conversion7.trace
 
+import org.codehaus.groovy.runtime.DefaultGroovyMethods
+
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
@@ -91,7 +93,7 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
     }
 
     void println(String msg) {
-        super.println(this.getClass().getSimpleName() + ": " + msg)
+        DefaultGroovyMethods.println(this.getClass().getSimpleName() + ": " + msg)
     }
 
 }
