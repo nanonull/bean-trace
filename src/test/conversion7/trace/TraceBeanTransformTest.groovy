@@ -39,9 +39,7 @@ class TraceBeanTransformTest extends GroovyTestCase {
 
 
     void 'test static super field access'() {
-        assert TraceBean.create(Bean1).PROP_CHANGE_NAME == "propertyChange"
         assert TraceBean.create(Bean1).FF_BEAN1_FINAL == 100
-        assert TraceBean.create(Bean2).PROP_CHANGE_NAME == "propertyChange"
         assert TraceBean.create(Bean2).FF_BEAN1_FINAL == 100
     }
 
@@ -55,7 +53,6 @@ class TraceBeanTransformTest extends GroovyTestCase {
 
         @Override
         void run() {
-            assert PROP_CHANGE_NAME == "propertyChange"
             assert F1_BEAN1_FINAL == 100
 //            assert FF_BEAN1_FINAL == 100
         }
@@ -66,7 +63,6 @@ class TraceBeanTransformTest extends GroovyTestCase {
 
         @Override
         void run() {
-            assert PROP_CHANGE_NAME == "propertyChange"
             assert NO_PROBLEM_NAME == 200
             assert FF_BEAN1_FINAL == 100
         }

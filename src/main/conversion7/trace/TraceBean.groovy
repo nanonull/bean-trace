@@ -8,8 +8,6 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
 
     static boolean TRACE_BEAN = "y" == System.getProperty("bean.trace")
     static List SYS_PROPS = []
-    // TODO remove:
-    static String PROP_CHANGE_NAME = "propertyChange"
 
     protected int changes
     public List<String> beanPath
@@ -30,6 +28,7 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
         this.pcs.removePropertyChangeListener(listener);
     }
 
+    /**Called from setters created in conversion7.trace.BeanTransformer#wrapFieldsAndPropertiesForListening*/
     public void firePropertyChange(String prop, Object oldVal, Object newVal) {
         pcs.firePropertyChange(prop, oldVal, newVal)
     }
@@ -37,7 +36,7 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
     void propertyChange(PropertyChangeEvent changeEvent) {
         if (TRACE_BEAN) {
             this.changes++
-            this.println "'${changeEvent.propertyName}' change: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
+            this.println "'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
         }
     }
 
@@ -88,26 +87,6 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
                 // fallback for dynamic properties
                 // listeners doesn't work after instance's fields are init in this way
                 owner.metaClass."$entry.key" = entry.value
-            }
-        }
-    }
-
-    static void init(TraceBean bean) {
-        if (!TRACE_BEAN) {
-            return
-        }
-
-        try {
-            bean."$PROP_CHANGE_NAME" = { PropertyChangeEvent changeEvent ->
-                bean.changes++
-                bean.println "'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
-            }
-
-        } catch (MissingPropertyException e) {
-            if (e.getMessage().contains("No such property: $PROP_CHANGE_NAME")) {
-                println("Check @BeanTransformation annotation.")
-            } else {
-                throw new BeanException(e.getMessage(), e)
             }
         }
     }

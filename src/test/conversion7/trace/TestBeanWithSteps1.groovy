@@ -5,11 +5,11 @@ class TestBeanWithSteps1 extends TraceBean {
 
     static int FIELD1_BEAN1_FINAL = 100
     static List expLogLines =
-            ["TestBeanWithSteps1: '_f1' change: '1' >>> '2'"
+            ["TestBeanWithSteps1: '_f1' write: '1' >>> '2'"
              , "TestBeanWithSteps1: step1"
-             , "TestBeanWithSteps1: '_f1' change: '2' >>> '3'"
+             , "TestBeanWithSteps1: '_f1' write: '2' >>> '3'"
              , "TestBeanWithSteps1: step1_1"
-             , "TestBeanWithSteps1: '_f1' change: '3' >>> '100'"
+             , "TestBeanWithSteps1: '_f1' write: '3' >>> '100'"
              , "TestBeanWithSteps1: in step1_1"
             ]
     int f1 = 1

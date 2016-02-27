@@ -4,18 +4,18 @@ package conversion7.trace
 class TestBeanWithSteps1Ext extends TestBeanWithSteps1 {
 
     static List expLogLines2 =
-            ["TestBeanWithSteps1Ext: '_f1' change: '1' >>> '2'"
+            ["TestBeanWithSteps1Ext: '_f1' write: '1' >>> '2'"
              , "TestBeanWithSteps1: step1"
-             , "TestBeanWithSteps1Ext: '_f1' change: '2' >>> '3'"
+             , "TestBeanWithSteps1Ext: '_f1' write: '2' >>> '3'"
              , "TestBeanWithSteps1: step1_1"
-             , "TestBeanWithSteps1Ext: '_f1' change: '3' >>> '100'"
+             , "TestBeanWithSteps1Ext: '_f1' write: '3' >>> '100'"
              , "TestBeanWithSteps1Ext: in step1_1"
             ] +
-                    ["TestBeanWithSteps1Ext: '_f1' change: '100' >>> '101'"
+                    ["TestBeanWithSteps1Ext: '_f1' write: '100' >>> '101'"
                      , "TestBeanWithSteps1Ext: step2"
-                     , "TestBeanWithSteps1Ext: '_f1' change: '101' >>> '102'"
+                     , "TestBeanWithSteps1Ext: '_f1' write: '101' >>> '102'"
                      , "TestBeanWithSteps1Ext: step2_1"
-                     , "TestBeanWithSteps1Ext: '_f1' change: '102' >>> '103'"
+                     , "TestBeanWithSteps1Ext: '_f1' write: '102' >>> '103'"
                     ]
 
     @Override
@@ -23,7 +23,6 @@ class TestBeanWithSteps1Ext extends TestBeanWithSteps1 {
         super.run()
 
         f1++
-        assert PROP_CHANGE_NAME == "propertyChange"
         assert f1 == FIELD1_BEAN1_FINAL + 1
         step2()
     }
