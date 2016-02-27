@@ -22,7 +22,7 @@ class TestBeanWithSteps1Ext extends TestBeanWithSteps1 {
 
     @Override
     void run() {
-        Object.run()
+        super.run()
 
         f1++
         assert f1 == FIELD1_BEAN1_FINAL + 1
