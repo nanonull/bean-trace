@@ -1,60 +1,37 @@
 package conversion7.trace
 
-import org.codehaus.groovy.runtime.DefaultGroovyMethods
-
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
 
-abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeListener {
+trait TraceBean implements PropertyChangeListener {
 
     static boolean TRACE_BEAN = "y" == System.getProperty("bean.trace")
     static List<String> SYS_PROPS = []
 
-    protected int _changes
-    public List<String> beanPath
-    public Map initialBeanProperties
-    private final PropertyChangeSupport pcs = new PropertyWriteListeningSupport(this);
+    int _changes
+    Map initialBeanProperties = new TreeMap()
+    private PropertyChangeSupport propertyChangeSupport
+    GroovyObject instanceOwner
 
-    TraceBean() {
-        initialBeanProperties = new TreeMap()
-        beanPath = new ArrayList<>()
-        pcs.addPropertyChangeListener(PropertyWriteListeningSupport.COMMON_LISTENER, this)
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        this.pcs.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        this.pcs.removePropertyChangeListener(listener);
+    void initTracing(GroovyObject instanceOwner) {
+        propertyChangeSupport = new PropertyWriteListeningSupport(this);
+        propertyChangeSupport.addPropertyChangeListener(PropertyWriteListeningSupport.COMMON_LISTENER, this)
+        this.instanceOwner = instanceOwner
     }
 
     /**Called from setters created in conversion7.trace.BeanTransformer#wrapFieldsAndPropertiesForListening*/
     public void firePropertyChange(String prop, Object oldVal, Object newVal) {
-        pcs.firePropertyChange(prop, oldVal, newVal)
+        propertyChangeSupport.firePropertyChange(prop, oldVal, newVal)
     }
 
     void propertyChange(PropertyChangeEvent changeEvent) {
         if (TRACE_BEAN) {
-            this._changes++
+            this._changes += 1
             this.println "'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
         }
     }
 
-    public static <C extends TraceBean> C create(final Class<C> type) {
-        return create(type, null)
-    }
-
-    public static <C extends TraceBean> C create(final Class<C> type, Map<String, Object> initProps) {
-        def instance = type.newInstance()
-
-        if (initProps != null) {
-            instance.handleInputProps(initProps)
-        }
-
-        return instance
-    }
 
     void handleInputProps(Map<String, Object> initProps) {
         SYS_PROPS.each {
@@ -67,15 +44,11 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
             def property = entry.key
             def newValue = entry.value
 
-            MetaBeanProperty field = owner.metaClass.getProperties()
+            MetaBeanProperty field = instanceOwner.metaClass.getProperties()
                     .find { f -> f.name == property } as MetaBeanProperty
             def updateToMetaProps = false
             if (field != null) {
-                try {
-                    owner.setProperty(property, newValue)
-                } catch (NullPointerException e) {
-                    updateToMetaProps = true
-                }
+                instanceOwner.setProperty(property, newValue)
             } else {
                 updateToMetaProps = true
             }
@@ -83,17 +56,26 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
             if (updateToMetaProps) {
                 // fallback for dynamic properties
                 // listeners doesn't work after instance's fields are init in this way
-                owner.metaClass."$entry.key" = entry.value
+                instanceOwner.metaClass."$entry.key" = entry.value
             }
         }
     }
 
-    protected void handleInputSysProp(String propName, Object value) {
+    void handleInputSysProp(String propName, Object value) {
 
     }
 
+
+    void println() {
+        println("")
+    }
+
+    void println(Object object) {
+        println(String.valueOf(object))
+    }
+
     void println(String msg) {
-        DefaultGroovyMethods.println(this.getClass().getSimpleName() + ": " + msg)
+        System.out.println(this.getClass().getSimpleName() + ": " + msg)
     }
 
 }

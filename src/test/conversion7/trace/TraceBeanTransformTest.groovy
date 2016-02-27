@@ -1,8 +1,9 @@
 package conversion7.trace
 
-import conversion7.trace.beans.Bean4
-import conversion7.trace.beans.TestBean1
-import conversion7.trace.beans.TestBeanWithAllFieldMods
+import conversion7.trace.test_beans.ClientBeanImpl
+import conversion7.trace.test_beans.TestBean1
+import conversion7.trace.test_beans.TestBean4
+import conversion7.trace.test_beans.TestBeanWithAllFieldMods
 import org.codehaus.groovy.runtime.MetaClassHelper
 
 import java.lang.reflect.Modifier
@@ -15,7 +16,7 @@ class TraceBeanTransformTest extends GroovyTestCase {
     }
 
     void testPropertyChangeListenersAreCreatedAtCompile() {
-        def obj1 = TraceBean.create(TestBean1)
+        def obj1 = BaseBeanManager.create(TestBean1)
         println obj1
         obj1.f1++
         obj1.f2++
@@ -24,7 +25,7 @@ class TraceBeanTransformTest extends GroovyTestCase {
     }
 
     void testPropertyGetter() {
-        def obj1 = TraceBean.create(TestBean1)
+        def obj1 = BaseBeanManager.create(TestBean1)
         assert obj1.f1 == 0
         assert obj1.getF1() == 0
         assert obj1.f3 == 0
@@ -33,7 +34,7 @@ class TraceBeanTransformTest extends GroovyTestCase {
     }
 
     void testPropertySetter() {
-        def obj1 = TraceBean.create(TestBean1)
+        def obj1 = BaseBeanManager.create(TestBean1)
         obj1.setF1(1)
         assert obj1.f1 == 1
         obj1.setThisF3(2)
@@ -42,12 +43,12 @@ class TraceBeanTransformTest extends GroovyTestCase {
 
 
     void 'test static super field access'() {
-        assert TraceBeanCalc.create(Bean1).FF_BEAN1_FINAL == 100
-        assert TraceBeanCalc.create(Bean2).FF_BEAN1_FINAL == 100
+        assert ClientBeanImpl.create(Bean1).FF_BEAN1_FINAL == 100
+        assert ClientBeanImpl.create(Bean2).FF_BEAN1_FINAL == 100
     }
 
     @BeanTransformation
-    static class Bean1 extends TraceBeanCalc {
+    static class Bean1 extends ClientBeanImpl {
         static int NO_PROBLEM_NAME = 200
 
         static int F1_BEAN1_FINAL = 100
@@ -72,7 +73,7 @@ class TraceBeanTransformTest extends GroovyTestCase {
     }
 
     void 'test property return type'() {
-        def bean1 = TraceBean.create(TestBean1)
+        def bean1 = BaseBeanManager.create(TestBean1)
         def f1 = bean1.f1
         assert f1.getClass() == Integer
         assert bean1.getF1().class == Integer
@@ -80,35 +81,41 @@ class TraceBeanTransformTest extends GroovyTestCase {
     }
 
     void 'test do not transform prop if custom getter found'() {
-        def b = TraceBean.create(Bean3)
+        def b = BaseBeanManager.create(Bean3)
         assert b.f1 == Bean3.CONST_F1
         assert b.getF1() == Bean3.CONST_F1
         assert b.@f1 == 1
     }
 
     @BeanTransformation
-    static class Bean3 extends TraceBean {
+    static class Bean3 extends ClientBeanImpl {
         int f1 = 1
         static int CONST_F1 = 10
 
         int getF1() {
             return CONST_F1
         }
+
+        @Override
+        void run() {
+
+        }
     }
 
     void 'test do not transform prop if custom setter found'() {
-        def b = TraceBean.create(Bean4)
+
+        def b = BaseBeanManager.create(TestBean4)
         b.f1 = 2
-        assert b.f1 == Bean4.CONST_F1
+        assert b.f1 == TestBean4.CONST_F1
 
         b.@f1 = -1
         b.setF1(3)
-        assert b.getF1() == Bean4.CONST_F1
+        assert b.getF1() == TestBean4.CONST_F1
     }
 
 
     void 'test transformed fields'() {
-        def b = TraceBeanCalc.create(TestBeanWithAllFieldMods)
+        def b = ClientBeanImpl.create(TestBeanWithAllFieldMods)
 
         assert !findField(TestBeanWithAllFieldMods, "f1")
         assert !findField(TestBeanWithAllFieldMods, "f2")

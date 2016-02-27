@@ -1,10 +1,9 @@
-package conversion7.trace.beans
+package conversion7.trace.test_beans
 
 import conversion7.trace.BeanTransformation
-import conversion7.trace.TraceBeanCalc
 
 @BeanTransformation
-class TestBeanWithSteps1 extends TraceBeanCalc {
+class TestBeanWithSteps1 extends ClientBeanImpl {
 
     static int FIELD1_BEAN1_FINAL = 100
     static List expLogLines =

@@ -1,4 +1,4 @@
-package conversion7.trace.beans
+package conversion7.trace.test_beans
 
 import conversion7.trace.BeanTransformation
 

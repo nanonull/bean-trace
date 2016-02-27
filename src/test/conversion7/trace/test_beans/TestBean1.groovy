@@ -1,11 +1,9 @@
-package conversion7.trace.beans
+package conversion7.trace.test_beans
 
 import conversion7.trace.BeanTransformation
-import conversion7.trace.TraceBean
-
 
 @BeanTransformation
-class TestBean1 extends TraceBean {
+class TestBean1 extends ClientBeanImpl {
     int f1
     int f2
     int f3
@@ -18,5 +16,10 @@ class TestBean1 extends TraceBean {
     void setThisF3(final int f3) {
         println 'setF3'
         this.f3 = f3
+    }
+
+    @Override
+    void run() {
+
     }
 }

@@ -18,22 +18,20 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
 import java.lang.reflect.Modifier
 
 import static org.codehaus.groovy.ast.tools.GeneralUtils.*
+
 /**see transformBeanClass*/
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 public class BeanTransformer extends BindableASTTransformation {
 
-    static String TARGET_CLASS
+    static ClassNode TARGET_CLASS
     static final StringBuilder DEBUG = new StringBuilder()
-    static final String PROP_CHANGE_SUPPORT_NAME = "this\$propertyChangeSupport"
-
 
     static {
-        init(BeanTransformer, TraceBean)
+        init(TraceBean)
     }
 
-    public static void init(Class boundClass, Class rootBeanClass) {
-        boundClassNode = ClassHelper.make(boundClass)
-        TARGET_CLASS = rootBeanClass.getName()
+    public static void init(Class rootBeanClass) {
+        TARGET_CLASS = ClassHelper.make(rootBeanClass)
     }
 
     @Override
@@ -50,20 +48,15 @@ public class BeanTransformer extends BindableASTTransformation {
         if (isNodeMatchesTargetClass(classNode)) {
             transformBeanClass(classNode, annotationNode, source, declaringClass)
         } else {
-            def wrongClassMsg = new SimpleMessage("ERROR: $classNode is selected for transformation, but doesn't extend $TARGET_CLASS"
+            def wrongClassMsg = new SimpleMessage("ERROR: $classNode is selected for transformation, but doesn't implement $TARGET_CLASS"
                     , source)
-            throw new RuntimeException(wrongClassMsg.getMessage())
+            throwError(new RuntimeException(wrongClassMsg.getMessage()))
         }
-
-        debug()
     }
 
-    void debug() {
-        //        classNode.addField("testField", ACC_PUBLIC
-//                , ClassHelper.STRING_TYPE, new ConstantExpression("hey"))
-//        throw new RuntimeException(DEBUG.toString())
+    static void throwError(Throwable e) {
+        throw new RuntimeException("DEBUG:\n" + DEBUG.toString() + "\nERROR:\n" + e.getMessage(), e);
     }
-
 
     static void transformBeanClass(final ClassNode classNode, AnnotationNode node, SourceUnit source
                                    , ClassNode declaringClass) {
@@ -106,6 +99,8 @@ public class BeanTransformer extends BindableASTTransformation {
             }
         }
 
+//        throwError(new Exception())
+
         // disable synth. generation
         def iterator = classNode.getProperties().iterator()
         while (iterator.hasNext()) {
@@ -121,15 +116,16 @@ public class BeanTransformer extends BindableASTTransformation {
         if (((field.getModifiers() & ACC_FINAL) != 0)
                 || field.isStatic()
                 || field.name.startsWith("this\$")
+                || field.name == "metaClass"
                 || field.name.startsWith("_")) {
             return false
         }
 
+        DEBUG.append(field.name).append("\n")
         return true
     }
 
     private static boolean tryWrap(ClassNode classNode, FieldNode field, SourceUnit source) {
-
         def originalFieldName = field.getName()
         def fieldMethodsMod = field.modifiers
         if (classNode.hasProperty(originalFieldName)) {
@@ -151,7 +147,8 @@ public class BeanTransformer extends BindableASTTransformation {
 
         def fieldExpression = fieldX(field);
         Statement setterBlock =
-                stmt(callThisX("firePropertyChange", args(constX(field.getName()), fieldExpression, assignX(fieldExpression, varX("value")))));
+                stmt(callThisX("firePropertyChange", args(constX(field.getName())
+                        , fieldExpression, assignX(fieldExpression, varX("value")))));
         MethodNode setter = new MethodNode(
                 setterName,
                 fieldMethodsMod,
@@ -177,21 +174,16 @@ public class BeanTransformer extends BindableASTTransformation {
     }
 
     static boolean isNodeMatchesTargetClass(ClassNode classNode) {
-
-        if (classNode.name == TARGET_CLASS) {
-            return true
-        }
-
-        while (true) {
-            def superName = classNode.superClass.name
-            if (superName == TARGET_CLASS) {
+        while (classNode != null) {
+            if (classNode.interfaces.find {
+                DEBUG.append(it).append("\n")
+                return it == TARGET_CLASS
+            }) {
                 return true
             }
 
             classNode = classNode.superClass
-            if (superName == 'java.lang.Object') {
-                return false
-            }
         }
+        return false
     }
 }

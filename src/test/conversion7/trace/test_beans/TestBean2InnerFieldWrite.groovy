@@ -1,10 +1,9 @@
-package conversion7.trace.beans
+package conversion7.trace.test_beans
 
 import conversion7.trace.BeanTransformation
-import conversion7.trace.TraceBeanCalc
 
 @BeanTransformation
-class TestBean2InnerFieldWrite extends TraceBeanCalc {
+class TestBean2InnerFieldWrite extends ClientBeanImpl {
     int f1
 
     @Override

@@ -1,13 +1,14 @@
 package conversion7.trace
 
-import conversion7.trace.beans.TestBean1
+import conversion7.trace.test_beans.ClientBeanImpl
+import conversion7.trace.test_beans.TestBean1
 
 
 class TraceBeanTest extends GroovyTestCase {
 
 
     void 'test create new dynamic properties'() {
-        def obj1 = TraceBean.create(TestBean1, ['newF1': 2, 'newF2': null])
+        def obj1 = BaseBeanManager.create(TestBean1, ['newF1': 2, 'newF2': null])
         assert obj1._changes == 0
 
         assert obj1.getProperty('newF1') == 2
@@ -24,23 +25,23 @@ class TraceBeanTest extends GroovyTestCase {
     }
 
     void 'test update from dynamic props'() {
-        def obj1 = TraceBean.create(TestBean1, ['f1': 10])
+        def obj1 = BaseBeanManager.create(TestBean1, ['f1': 10])
         assert obj1.f1 == 10
     }
 
     void 'test sys props are not used in getDependentBean '() {
-        def b1 = TraceBean.create(Bean1)
-        def b2 = TraceBean.create(Bean2, b1.initialBeanProperties)
+        def b1 = BaseBeanManager.create(Bean1)
+        def b2 = BaseBeanManager.create(Bean2, b1.initialBeanProperties)
 
-        TraceBean.SYS_PROPS.each {
+        ClientBeanImpl.SYS_PROPS.each {
             assert !b1.initialBeanProperties.containsKey(it)
             assert !b2.initialBeanProperties.containsKey(it)
         }
     }
 
     void 'test props after getDependentBean '() {
-        def b1 = TraceBean.create(Bean1, [f1: 1, dynProp1: 2, dynProp2: 3])
-        def b2 = TraceBean.create(Bean2, b1.initialBeanProperties)
+        def b1 = BaseBeanManager.create(Bean1, [f1: 1, dynProp1: 2, dynProp2: 3])
+        def b2 = BaseBeanManager.create(Bean2, b1.initialBeanProperties)
 
         assert b2.f1 == 1
         assert b2.dynProp1 == 2
@@ -50,8 +51,8 @@ class TraceBeanTest extends GroovyTestCase {
     }
 
     void 'test props after getDependentBean with additional props'() {
-        def b1 = TraceBean.create(Bean1, [f1: 1, dynProp1: 2, dynProp2: 3])
-        def b2 = TraceBean.create(Bean2, b1.initialBeanProperties + [f11: 11, dynProp11: 22, dynProp22: 33])
+        def b1 = BaseBeanManager.create(Bean1, [f1: 1, dynProp1: 2, dynProp2: 3])
+        def b2 = BaseBeanManager.create(Bean2, b1.initialBeanProperties + [f11: 11, dynProp11: 22, dynProp22: 33])
 
         assert b2.f1 == 1
         assert b2.dynProp1 == 2
@@ -62,43 +63,56 @@ class TraceBeanTest extends GroovyTestCase {
     }
 
     @BeanTransformation
-    static class Bean1 extends TraceBean {
+    static class Bean1 extends ClientBeanImpl {
         int f1
         int f2 = 5
+
+        @Override
+        void run() {
+
+        }
     }
 
     @BeanTransformation
-    static class Bean2 extends TraceBean {
+    static class Bean2 extends ClientBeanImpl {
         int f1
         int f11
         int dynProp2
         int dynProp22
 
+        @Override
+        void run() {
+
+        }
     }
 
     void 'test handle sys prop'() {
-        TraceBean.SYS_PROPS.add("dataSource")
+        ClientBeanImpl.SYS_PROPS.add("dataSource")
         try {
 
             def dataSource = new Object()
-            def b = TraceBean.create(BeanWithDataSourceSysProp, [dataSource: dataSource])
+            def b = BaseBeanManager.create(BeanWithDataSourceSysProp, [dataSource: dataSource])
             assert b.dataSource == dataSource
             assert !b.initialBeanProperties.containsKey("dataSource")
             assert b.initialBeanProperties.size() == 0
         } finally {
-            TraceBean.SYS_PROPS.remove("dataSource")
+            ClientBeanImpl.SYS_PROPS.remove("dataSource")
         }
     }
 
-    static class BeanWithDataSourceSysProp extends TraceBean {
+    static class BeanWithDataSourceSysProp extends ClientBeanImpl {
         Object dataSource
 
-        protected void handleInputSysProp(String propName, Object value) {
+        void handleInputSysProp(String propName, Object value) {
             if (propName == "dataSource") {
                 dataSource = value
             }
         }
 
+        @Override
+        void run() {
+
+        }
     }
 
 }
