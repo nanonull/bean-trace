@@ -186,20 +186,6 @@ class TraceBeanTransformTest extends GroovyTestCase {
         return aClass.declaredMethods.find { it.name == fullName }
     }
 
-    void 'test PROP_CHANGE_SUPPORT_NAME is added only once'() {
-        testPropertyExists(BeanTransformer.PROP_CHANGE_SUPPORT_NAME
-                , TraceBean.create(TestBean1)
-                , true, false, false)
-
-        // tree with 2 classes with transformation
-
-        def bean2Ext = TraceBean.create(TestBean2Ext)
-        testPropertyExists(BeanTransformer.PROP_CHANGE_SUPPORT_NAME
-                , bean2Ext
-                , true, false, false)
-
-    }
-
     // do not assert expected parameters with null
     // assert property exists only once
     static void testPropertyExists(String name, Object object

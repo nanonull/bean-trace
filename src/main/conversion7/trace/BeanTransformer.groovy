@@ -1,6 +1,5 @@
 package conversion7.trace
 
-
 import groovy.beans.BindableASTTransformation
 import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.expr.ArgumentListExpression
@@ -16,12 +15,9 @@ import org.codehaus.groovy.control.messages.SimpleMessage
 import org.codehaus.groovy.runtime.MetaClassHelper
 import org.codehaus.groovy.transform.GroovyASTTransformation
 
-import java.beans.PropertyChangeListener
-import java.beans.PropertyChangeSupport
 import java.lang.reflect.Modifier
 
 import static org.codehaus.groovy.ast.tools.GeneralUtils.*
-
 /**see transformBeanClass*/
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 public class BeanTransformer extends BindableASTTransformation {
@@ -69,9 +65,9 @@ public class BeanTransformer extends BindableASTTransformation {
     }
 
 
-    void transformBeanClass(final ClassNode classNode, AnnotationNode node, SourceUnit source
-                            , ClassNode declaringClass) {
-        addPropertyListenerToClass(source, classNode)
+    static void transformBeanClass(final ClassNode classNode, AnnotationNode node, SourceUnit source
+                                   , ClassNode declaringClass) {
+        wrapFieldsAndPropertiesForListening(source, classNode)
         addStepInterceptors(source, classNode)
     }
 
@@ -100,10 +96,7 @@ public class BeanTransformer extends BindableASTTransformation {
 
     }
 
-    // TODO create this not in ast
-    private void addPropertyListenerToClass(SourceUnit source, ClassNode classNode) {
-//        addPropertyChangeSupport(classNode);
-
+    private static void wrapFieldsAndPropertiesForListening(SourceUnit source, ClassNode classNode) {
         def wrapped = new ArrayList<>()
         classNode.fields.each {
             if (shouldWrap(it)) {
@@ -122,109 +115,6 @@ public class BeanTransformer extends BindableASTTransformation {
                 iterator.remove()
             }
         }
-    }
-
-    @Override
-    protected void addPropertyChangeSupport(ClassNode declaringClass) {
-        ClassNode pcsClassNode = ClassHelper.make(PropertyChangeSupport.class);
-        ClassNode pclClassNode = ClassHelper.make(PropertyChangeListener.class);
-        //String pcsFieldName = "this$propertyChangeSupport";
-
-        // add field:
-        // protected final PropertyChangeSupport this$propertyChangeSupport = new java.beans.PropertyChangeSupport(this)
-        FieldNode pcsField = declaringClass.addField(
-                PROP_CHANGE_SUPPORT_NAME,
-                ACC_FINAL | ACC_PRIVATE | ACC_SYNTHETIC,
-                pcsClassNode,
-                ctorX(pcsClassNode, args(varX("this"))));
-
-        // add method:
-        // void addPropertyChangeListener(listener) {
-        //     this$propertyChangeSupport.addPropertyChangeListener(listener)
-        //  }
-        declaringClass.addMethod(
-                new MethodNode(
-                        "addPropertyChangeListener",
-                        ACC_PUBLIC,
-                        ClassHelper.VOID_TYPE,
-                        params(param(pclClassNode, "listener")),
-                        ClassNode.EMPTY_ARRAY,
-                        stmt(callX(fieldX(pcsField), "addPropertyChangeListener", args(varX("listener", pclClassNode))))));
-
-        // add method:
-        // void addPropertyChangeListener(name, listener) {
-        //     this$propertyChangeSupport.addPropertyChangeListener(name, listener)
-        //  }
-        declaringClass.addMethod(
-                new MethodNode(
-                        "addPropertyChangeListener",
-                        ACC_PUBLIC,
-                        ClassHelper.VOID_TYPE,
-                        params(param(ClassHelper.STRING_TYPE, "name"), param(pclClassNode, "listener")),
-                        ClassNode.EMPTY_ARRAY,
-                        stmt(callX(fieldX(pcsField), "addPropertyChangeListener", args(varX("name", ClassHelper.STRING_TYPE), varX("listener", pclClassNode))))));
-
-        // add method:
-        // boolean removePropertyChangeListener(listener) {
-        //    return this$propertyChangeSupport.removePropertyChangeListener(listener);
-        // }
-        declaringClass.addMethod(
-                new MethodNode(
-                        "removePropertyChangeListener",
-                        ACC_PUBLIC,
-                        ClassHelper.VOID_TYPE,
-                        params(param(pclClassNode, "listener")),
-                        ClassNode.EMPTY_ARRAY,
-                        stmt(callX(fieldX(pcsField), "removePropertyChangeListener", args(varX("listener", pclClassNode))))));
-
-        // add method: void removePropertyChangeListener(name, listener)
-        declaringClass.addMethod(
-                new MethodNode(
-                        "removePropertyChangeListener",
-                        ACC_PUBLIC,
-                        ClassHelper.VOID_TYPE,
-                        params(param(ClassHelper.STRING_TYPE, "name"), param(pclClassNode, "listener")),
-                        ClassNode.EMPTY_ARRAY,
-                        stmt(callX(fieldX(pcsField), "removePropertyChangeListener", args(varX("name", ClassHelper.STRING_TYPE), varX("listener", pclClassNode))))));
-
-        // add method:
-        // void firePropertyChange(String name, Object oldValue, Object newValue) {
-        //     this$propertyChangeSupport.firePropertyChange(name, oldValue, newValue)
-        //  }
-        declaringClass.addMethod(
-                new MethodNode(
-                        "firePropertyChange",
-                        ACC_PUBLIC,
-                        ClassHelper.VOID_TYPE,
-                        params(param(ClassHelper.STRING_TYPE, "name"), param(ClassHelper.OBJECT_TYPE, "oldValue"), param(ClassHelper.OBJECT_TYPE, "newValue")),
-                        ClassNode.EMPTY_ARRAY,
-                        stmt(callX(fieldX(pcsField), "firePropertyChange", args(varX("name", ClassHelper.STRING_TYPE), varX("oldValue"), varX("newValue"))))));
-
-        // add method:
-        // PropertyChangeListener[] getPropertyChangeListeners() {
-        //   return this$propertyChangeSupport.getPropertyChangeListeners
-        // }
-        declaringClass.addMethod(
-                new MethodNode(
-                        "getPropertyChangeListeners",
-                        ACC_PUBLIC,
-                        pclClassNode.makeArray(),
-                        Parameter.EMPTY_ARRAY,
-                        ClassNode.EMPTY_ARRAY,
-                        returnS(callX(fieldX(pcsField), "getPropertyChangeListeners"))));
-
-        // add method:
-        // PropertyChangeListener[] getPropertyChangeListeners(String name) {
-        //   return this$propertyChangeSupport.getPropertyChangeListeners(name)
-        // }
-        declaringClass.addMethod(
-                new MethodNode(
-                        "getPropertyChangeListeners",
-                        ACC_PUBLIC,
-                        pclClassNode.makeArray(),
-                        params(param(ClassHelper.STRING_TYPE, "name")),
-                        ClassNode.EMPTY_ARRAY,
-                        returnS(callX(fieldX(pcsField), "getPropertyChangeListeners", args(varX("name", ClassHelper.STRING_TYPE))))));
     }
 
     static boolean shouldWrap(final FieldNode field) {
