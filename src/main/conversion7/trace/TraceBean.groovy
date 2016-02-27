@@ -6,19 +6,21 @@ import java.beans.PropertyChangeSupport
 
 abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeListener {
 
-    public static boolean BEAN_DUMPING = ('y' == System.getProperty('bean.dump'))
-    public static boolean BEAN_CRASH_EXIT = ('y' == System.getProperty('bean.crash.exit'))
-    public static final String PARENT_BEAN = "parentBean"
     static boolean TRACE_BEAN = "y" == System.getProperty("bean.trace")
-    static List SYS_PROPS = ["dataSource"]
+    static List SYS_PROPS = []
+    // TODO remove:
     static String PROP_CHANGE_NAME = "propertyChange"
 
     protected int changes
     public List<String> beanPath
     public Map initialBeanProperties
+    private final PropertyChangeSupport pcs = new PropertyWriteListeningSupport(this);
 
-    // TODO override PropertyChangeSupport#firePropertyChange to trigger even oldVal == newVal
-    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    TraceBean() {
+        initialBeanProperties = new TreeMap()
+        beanPath = new ArrayList<>()
+        pcs.addPropertyChangeListener(PropertyWriteListeningSupport.COMMON_LISTENER, this)
+    }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         this.pcs.addPropertyChangeListener(listener);
@@ -37,12 +39,6 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
             this.changes++
             this.println "'${changeEvent.propertyName}' change: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
         }
-    }
-
-    TraceBean() {
-        initialBeanProperties = new TreeMap()
-        beanPath = new ArrayList<>()
-        pcs.addPropertyChangeListener(this)
     }
 
     abstract void run()
@@ -104,7 +100,7 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
         try {
             bean."$PROP_CHANGE_NAME" = { PropertyChangeEvent changeEvent ->
                 bean.changes++
-                bean.println "'${changeEvent.propertyName}' change: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
+                bean.println "'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
             }
 
         } catch (MissingPropertyException e) {
@@ -117,9 +113,7 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
     }
 
     void println(String msg) {
-        if (TRACE_BEAN) {
-            super.println(this.getClass().getSimpleName() + ": " + msg)
-        }
+        super.println(this.getClass().getSimpleName() + ": " + msg)
     }
 
 }

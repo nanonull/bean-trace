@@ -64,13 +64,13 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
         def b2 = TraceBean.create(TestBean2Ext) // tested inside
     }
 
-    void 'test PropertyChange listens only for new values'() {
+    void 'test PropertyChange listens NOT only for new values'() {
         def obj1 = TraceBean.create(TestBean1)
 
         obj1.f1 = 10
         assert obj1.changes == 1
         obj1.f1 = 10
-        assert obj1.changes == 1
+        assert obj1.changes == 2
     }
 
 }

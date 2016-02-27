@@ -1,6 +1,6 @@
 package conversion7.trace
 
-class TraceBeanLogTest extends GroovyTestCase{
+class TraceBeanLogTest extends GroovyTestCase {
     static def sysOut = System.out
     static def sysErr = System.err
 
@@ -19,7 +19,7 @@ class TraceBeanLogTest extends GroovyTestCase{
         println 'cleanUpStreams2'
     }
 
-    // FIXME works only for tests with setUpStreams?
+    //  works only for tests with setUpStreams?
     void 'test log in simple bean'() {
         setUpStreams()
 
@@ -29,7 +29,7 @@ class TraceBeanLogTest extends GroovyTestCase{
                 .split("\r\n") as List) == TestBeanWithSteps1.expLogLines
     }
 
-    // FIXME works only for tests with setUpStreams?
+    //  works only for tests with setUpStreams?
     void 'test log in extended bean'() {
         setUpStreams()
 

@@ -24,7 +24,7 @@ class TestBean2InnerFieldWrite extends TraceBean {
         assert changes == expChanges
         expChanges++
 
-        // TODO impl like this:
+        // TODO 0 impl like this:
 //        this.metaClass.setAttribute = { Object object, String attribute, Object newValue ->
 //            object.setProperty(attribute, newValue)
 //        }
