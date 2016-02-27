@@ -83,6 +83,36 @@ class TraceBeanTest extends GroovyTestCase {
         }
     }
 
+    void 'test handle sys prop'() {
+        TraceBean.SYS_PROPS.add("dataSource")
+        try {
+
+            def dataSource = new Object()
+            def b = TraceBean.create(BeanWithDataSourceSysProp, [dataSource: dataSource])
+            assert b.dataSource == dataSource
+            assert !b.initialBeanProperties.containsKey("dataSource")
+            assert b.initialBeanProperties.size() == 0
+        } finally {
+            TraceBean.SYS_PROPS.remove("dataSource")
+        }
+    }
+
+    static class BeanWithDataSourceSysProp extends TraceBean {
+        Object dataSource
+
+        @Override
+        void run() {
+
+        }
+
+        protected void handleInputSysProp(String propName, Object value) {
+            if (propName == "dataSource") {
+                dataSource = value
+            }
+        }
+
+    }
+
 }
 
 

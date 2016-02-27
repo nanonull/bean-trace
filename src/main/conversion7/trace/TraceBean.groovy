@@ -7,7 +7,7 @@ import java.beans.PropertyChangeSupport
 abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeListener {
 
     static boolean TRACE_BEAN = "y" == System.getProperty("bean.trace")
-    static List SYS_PROPS = []
+    static List<String> SYS_PROPS = []
 
     protected int changes
     public List<String> beanPath
@@ -60,8 +60,8 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
 
     void handleInputProps(Map<String, Object> initProps) {
         SYS_PROPS.each {
-            // TODO sysPropertyHandler.call
-            initProps.remove(it)
+            def removed = initProps.remove(it)
+            handleInputSysProp(it, removed)
         }
         initialBeanProperties.putAll(initProps)
 
@@ -89,6 +89,10 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
                 owner.metaClass."$entry.key" = entry.value
             }
         }
+    }
+
+    protected void handleInputSysProp(String propName, Object value) {
+
     }
 
     void println(String msg) {
