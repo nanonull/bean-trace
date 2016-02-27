@@ -1,10 +1,10 @@
 package conversion7.trace.beans
 
 import conversion7.trace.BeanTransformation
-import conversion7.trace.TraceBean
+import conversion7.trace.TraceBeanCalc
 
 @BeanTransformation
-class TestBean2InnerFieldWrite extends TraceBean {
+class TestBean2InnerFieldWrite extends TraceBeanCalc {
     int f1
 
     @Override
@@ -12,19 +12,19 @@ class TestBean2InnerFieldWrite extends TraceBean {
         int expChanges = 1
         f1++
         assert f1 == 1
-        assert changes == expChanges
+        assert _changes == expChanges
         expChanges++
 
         setF1(10)
-        assert changes == expChanges
+        assert _changes == expChanges
         expChanges++
 
         setProperty('f1', 20)
-        assert changes == expChanges
+        assert _changes == expChanges
         expChanges++
 
         this.f1++
-        assert changes == expChanges
+        assert _changes == expChanges
         expChanges++
 
         // TODO 0 impl like this:
@@ -33,7 +33,7 @@ class TestBean2InnerFieldWrite extends TraceBean {
 //        }
 
 //        this.@f1 = 30 // skip!
-//        assert changes == expChanges
+//        assert _changes == expChanges
 //        expChanges++
     }
 

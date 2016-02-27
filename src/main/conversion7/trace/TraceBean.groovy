@@ -9,7 +9,7 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
     static boolean TRACE_BEAN = "y" == System.getProperty("bean.trace")
     static List<String> SYS_PROPS = []
 
-    protected int changes
+    protected int _changes
     public List<String> beanPath
     public Map initialBeanProperties
     private final PropertyChangeSupport pcs = new PropertyWriteListeningSupport(this);
@@ -35,12 +35,10 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
 
     void propertyChange(PropertyChangeEvent changeEvent) {
         if (TRACE_BEAN) {
-            this.changes++
+            this._changes++
             this.println "'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
         }
     }
-
-    abstract void run()
 
     public static <C extends TraceBean> C create(final Class<C> type) {
         return create(type, null)
@@ -48,13 +46,11 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
 
     public static <C extends TraceBean> C create(final Class<C> type, Map<String, Object> initProps) {
         def instance = type.newInstance()
-//        init(instance)
 
         if (initProps != null) {
             instance.handleInputProps(initProps)
         }
 
-        instance.run()
         return instance
     }
 
@@ -75,7 +71,6 @@ abstract class TraceBean extends GroovyObjectSupport implements PropertyChangeLi
             if (field != null) {
                 try {
                     owner.setProperty(property, newValue)
-//                    field.field.field.set(instance, newValue)
                 } catch (NullPointerException e) {
                     updateToMetaProps = true
                 }

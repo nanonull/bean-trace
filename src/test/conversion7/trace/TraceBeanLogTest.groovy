@@ -26,7 +26,7 @@ class TraceBeanLogTest extends GroovyTestCase {
     void 'test log in simple bean'() {
         setUpStreams()
 
-        def beanWithSteps1 = TraceBean.create(TestBeanWithSteps1)
+        def beanWithSteps1 = TraceBeanCalc.create(TestBeanWithSteps1)
         assert (outContent.toString()
                 .replaceAll(".*BaseBean - ", "")
                 .split("\r\n") as List) == TestBeanWithSteps1.expLogLines
@@ -36,7 +36,7 @@ class TraceBeanLogTest extends GroovyTestCase {
     void 'test log in extended bean'() {
         setUpStreams()
 
-        def bean = TraceBean.create(TestBeanWithSteps1Ext)
+        def bean = TraceBeanCalc.create(TestBeanWithSteps1Ext)
         assert (outContent.toString()
                 .replaceAll(".*BaseBean - ", "")
                 .split("\r\n") as List) == TestBeanWithSteps1Ext.expLogLines2

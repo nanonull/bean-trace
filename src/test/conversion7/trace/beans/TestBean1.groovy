@@ -10,10 +10,6 @@ class TestBean1 extends TraceBean {
     int f2
     int f3
 
-    @Override
-    void run() {
-    }
-
     int getThisF3() {
         println 'getThisF3'
         return this.f3

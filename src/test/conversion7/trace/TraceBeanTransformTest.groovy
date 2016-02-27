@@ -20,7 +20,7 @@ class TraceBeanTransformTest extends GroovyTestCase {
         obj1.f1++
         obj1.f2++
         obj1.f3++
-        assert obj1.changes == 3
+        assert obj1._changes == 3
     }
 
     void testPropertyGetter() {
@@ -42,12 +42,12 @@ class TraceBeanTransformTest extends GroovyTestCase {
 
 
     void 'test static super field access'() {
-        assert TraceBean.create(Bean1).FF_BEAN1_FINAL == 100
-        assert TraceBean.create(Bean2).FF_BEAN1_FINAL == 100
+        assert TraceBeanCalc.create(Bean1).FF_BEAN1_FINAL == 100
+        assert TraceBeanCalc.create(Bean2).FF_BEAN1_FINAL == 100
     }
 
     @BeanTransformation
-    static class Bean1 extends TraceBean {
+    static class Bean1 extends TraceBeanCalc {
         static int NO_PROBLEM_NAME = 200
 
         static int F1_BEAN1_FINAL = 100
@@ -91,11 +91,6 @@ class TraceBeanTransformTest extends GroovyTestCase {
         int f1 = 1
         static int CONST_F1 = 10
 
-        @Override
-        void run() {
-
-        }
-
         int getF1() {
             return CONST_F1
         }
@@ -113,7 +108,7 @@ class TraceBeanTransformTest extends GroovyTestCase {
 
 
     void 'test transformed fields'() {
-        def b = TraceBean.create(TestBeanWithAllFieldMods)
+        def b = TraceBeanCalc.create(TestBeanWithAllFieldMods)
 
         assert !findField(TestBeanWithAllFieldMods, "f1")
         assert !findField(TestBeanWithAllFieldMods, "f2")
