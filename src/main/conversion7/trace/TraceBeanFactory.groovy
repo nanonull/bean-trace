@@ -1,6 +1,6 @@
 package conversion7.trace
 
-class BaseBeanManager {
+class TraceBeanFactory {
     public static <C extends TraceBean> C create(final Class<C> type) {
         return create(type, null)
     }

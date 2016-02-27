@@ -3,7 +3,7 @@ package conversion7.trace.test_beans
 import conversion7.trace.BeanTransformation
 
 @BeanTransformation
-class TestBean1 extends ClientBeanImpl {
+class TestBean1 extends ClientBeanTestImpl {
     int f1
     int f2
     int f3

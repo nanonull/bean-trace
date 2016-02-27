@@ -6,7 +6,6 @@ import java.beans.PropertyChangeSupport
 
 trait TraceBean implements PropertyChangeListener {
 
-    static boolean TRACE_BEAN = "y" == System.getProperty("bean.trace")
     static List<String> SYS_PROPS = []
 
     int _changes
@@ -26,10 +25,8 @@ trait TraceBean implements PropertyChangeListener {
     }
 
     void propertyChange(PropertyChangeEvent changeEvent) {
-        if (TRACE_BEAN) {
-            this._changes += 1
-            this.println "'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
-        }
+        this._changes += 1
+        println("'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'")
     }
 
 

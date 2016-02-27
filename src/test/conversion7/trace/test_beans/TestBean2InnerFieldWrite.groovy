@@ -3,7 +3,7 @@ package conversion7.trace.test_beans
 import conversion7.trace.BeanTransformation
 
 @BeanTransformation
-class TestBean2InnerFieldWrite extends ClientBeanImpl {
+class TestBean2InnerFieldWrite extends ClientBeanTestImpl {
     int f1
 
     @Override
