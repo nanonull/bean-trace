@@ -1,4 +1,7 @@
-package conversion7.trace
+package conversion7.trace.beans
+
+import conversion7.trace.BeanTransformation
+import conversion7.trace.TraceBean
 
 
 @BeanTransformation

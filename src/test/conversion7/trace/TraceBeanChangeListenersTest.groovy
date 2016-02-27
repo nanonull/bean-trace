@@ -1,5 +1,9 @@
 package conversion7.trace
 
+import conversion7.trace.beans.TestBean1
+import conversion7.trace.beans.TestBean2Ext
+import conversion7.trace.beans.TestBean2InnerFieldWrite
+
 class TraceBeanChangeListenersTest extends GroovyTestCase {
 
     void testPropertyChangeListenerWorks() {

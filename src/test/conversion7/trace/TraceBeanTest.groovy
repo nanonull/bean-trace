@@ -1,5 +1,7 @@
 package conversion7.trace
 
+import conversion7.trace.beans.TestBean1
+
 
 class TraceBeanTest extends GroovyTestCase {
 

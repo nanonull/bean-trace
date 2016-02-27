@@ -1,5 +1,8 @@
 package conversion7.trace
 
+import conversion7.trace.beans.Bean4
+import conversion7.trace.beans.TestBean1
+import conversion7.trace.beans.TestBeanWithAllFieldMods
 import org.codehaus.groovy.runtime.MetaClassHelper
 
 import java.lang.reflect.Modifier

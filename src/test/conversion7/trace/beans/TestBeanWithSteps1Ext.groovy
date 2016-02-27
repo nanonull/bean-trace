@@ -1,4 +1,6 @@
-package conversion7.trace
+package conversion7.trace.beans
+
+import conversion7.trace.BeanTransformation
 
 @BeanTransformation
 class TestBeanWithSteps1Ext extends TestBeanWithSteps1 {
@@ -20,7 +22,7 @@ class TestBeanWithSteps1Ext extends TestBeanWithSteps1 {
 
     @Override
     void run() {
-        super.run()
+        Object.run()
 
         f1++
         assert f1 == FIELD1_BEAN1_FINAL + 1

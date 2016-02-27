@@ -1,4 +1,6 @@
-package conversion7.trace
+package conversion7.trace.beans
+
+import conversion7.trace.BeanTransformation
 
 @BeanTransformation
 class TestBean2Ext extends TestBean2InnerFieldWrite {

@@ -1,5 +1,8 @@
 package conversion7.trace
 
+import conversion7.trace.beans.TestBeanWithSteps1
+import conversion7.trace.beans.TestBeanWithSteps1Ext
+
 class TraceBeanLogTest extends GroovyTestCase {
     static def sysOut = System.out
     static def sysErr = System.err
