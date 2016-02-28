@@ -13,9 +13,13 @@ trait TraceBean implements PropertyChangeListener {
     GroovyObject instanceOwner
 
     void initTracing(GroovyObject instanceOwner) {
-        propertyChangeSupport = new PropertyWriteListeningSupport(this);
-        addPropertyChangeListener(this)
         this.instanceOwner = instanceOwner
+        propertyChangeSupport = new PropertyWriteListeningSupport(instanceOwner);
+        if (instanceOwner instanceof PropertyChangeListener) {
+            addPropertyChangeListener(instanceOwner)
+        } else {
+            throw new BeanException("Have to implement PropertyChangeListener! " + instanceOwner)
+        }
     }
 
     /** #param propertyName - name as defined in class before compilation */
