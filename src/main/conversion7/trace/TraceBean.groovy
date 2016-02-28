@@ -30,14 +30,14 @@ trait TraceBean implements PropertyChangeListener {
         println("'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'")
     }
 
-    /**Invoked by transformed methods. <br>
-     * Also it could be invoked manually from bean code*/
     void methodInvoked(String name) {
         methodInvoked(getClass().getSimpleName(), name)
     }
 
-    void methodInvoked(String className, String name) {
-        println(" Invoke '${name}' from $className")
+    /**Invoked from transformed methods. <br>
+     * Also it could be invoked manually from bean code*/
+    void methodInvoked(String classNameWhereMethodDefined, String name) {
+        println(" Invoke '${name}' from $classNameWhereMethodDefined")
     }
 
     void handleInputProps(Map<String, Object> initProps) {

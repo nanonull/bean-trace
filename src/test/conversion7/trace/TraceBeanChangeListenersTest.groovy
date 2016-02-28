@@ -38,7 +38,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'testPropertyChangeListener DifferentWays outside instance'() {
-        def obj1 = BeanTestImpl.create(TestBean1)
+        def obj1 = TestApp.beanFactory.create(TestBean1)
 
         obj1.f1++
         assert obj1._changes == 1
@@ -59,11 +59,11 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'testPropertyChangeListener DifferentWays within instance'() {
-        def b1 = BeanTestImpl.create(TestBean2InnerFieldWrite) // tested inside
+        def b1 = TestApp.beanFactory.create(TestBean2InnerFieldWrite) // tested inside
     }
 
     void 'testPropertyChangeListener DifferentWays within instance exts'() {
-        def b2 = BeanTestImpl.create(TestBean2Ext) // tested inside
+        def b2 = TestApp.beanFactory.create(TestBean2Ext) // tested inside
     }
 
     void 'test PropertyChange listens NOT only for new values'() {

@@ -12,6 +12,6 @@ class TestBeanWithAllFieldMods extends BeanTestImpl {
 
     @Override
     void run() {
-        println("")
+        println("Done.")
     }
 }

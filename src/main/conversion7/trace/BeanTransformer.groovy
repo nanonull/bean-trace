@@ -21,7 +21,19 @@ public class BeanTransformer extends BindableASTTransformation {
 
     static ClassNode TARGET_CLASS
     static final StringBuilder DEBUG = new StringBuilder()
-    static List<String> SYSTEM_METHODS = ["\$getStaticMetaClass"]
+
+    // TODO replace by checking presence of original method in trait (it means system member if present in trait)
+    /**Hide these methods from handling.*/
+    static List<String> SYSTEM_METHODS = [
+            "\$getStaticMetaClass"
+            , "initTracing"
+            , "methodInvoked"
+            , "propertyChange"
+            , "handleInputSysProp"
+            , "handleInputProps"
+            , "handleInputProps"
+            , "println"
+    ]
 
     static {
         init(TraceBean)

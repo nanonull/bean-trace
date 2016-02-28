@@ -40,8 +40,8 @@ class TraceBeanTransformTest extends GroovyTestCase {
 
 
     void 'test static super field access'() {
-        assert BeanTestImpl.create(Bean1).FF_BEAN1_FINAL == 100
-        assert BeanTestImpl.create(Bean2).FF_BEAN1_FINAL == 100
+        assert TestApp.beanFactory.create(Bean1).FF_BEAN1_FINAL == 100
+        assert TestApp.beanFactory.create(Bean2).FF_BEAN1_FINAL == 100
     }
 
     @BeanTransformation
@@ -112,7 +112,7 @@ class TraceBeanTransformTest extends GroovyTestCase {
 
 
     void 'test transformed fields'() {
-        def b = BeanTestImpl.create(TestBeanWithAllFieldMods)
+        def b = TestApp.beanFactory.create(TestBeanWithAllFieldMods)
 
         assert !findField(TestBeanWithAllFieldMods, "f1")
         assert !findField(TestBeanWithAllFieldMods, "f2")
