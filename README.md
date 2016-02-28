@@ -1,12 +1,19 @@
 ## Runtime handling of <b>field<b>-writing and method-invoking.
+Transformed class handles executed methods and changed properties in runtime. It could help with debugging of complex execution flows, especially if no access to development-debug.
 
 ### Lib goal:
 - logging/notifying about writing into properties/fields;
 - logging of methods invocations;
-- beans dumping into tree structures TODO.
+- dumping of execution into graph view TODO;
+- transformation takes no extra client code (TODO instrumentation); 
 
-#### Why use lib? - It handles direct field access (and even if field was not changed).
-#### Why not use lib? - Renamed fields are not acceptable.
+#### When to use: 
+- you need log of execution path of your code;
+- you need handle direct write-field access (and even if field was not changed; TODO configurable).
+
+#### When don't use:
+- renamed fields are not acceptable;
+- you need dump whole object at given execution points (TODO)
 
 ##### How field access intercepted
 
@@ -36,8 +43,9 @@ Rules:
 - notifications are injected into each accessor method.
 
 ### Usage: 
-Maven dependency using jitpack (Choose version by "get it" button and add repository with dependency):
+Maven dependency using jitpack:
 https://jitpack.io/#nanonull/bean-trace
+(click Look-up > choose version and add repository with lib dependency to your build script)
 
 ### Depends on/Tested on:
 - version 1.0:
