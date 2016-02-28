@@ -34,3 +34,27 @@ sourceSets {
     }
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': project.name,
+                'Implementation-Version': version
+    }
+    baseName = project.name
+    from { zipTree(new File("", "build\\libs\\${baseName}-${version}-sources.jar")) }
+    from { zipTree(new File("", "build\\libs\\${baseName}-${version}-javadoc.jar")) }
+    with jar
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+javadoc {
+    failOnError = false
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+

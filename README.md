@@ -6,7 +6,7 @@
 
 ##### How field access intercepted
 
-In 2 words: <b>fields are renamed</b> and catched by java.bean.PropertyChangeSupport
+In 2 words: <b>fields are renamed</b> and catched by <b>java.bean.PropertyChangeSupport</b>
 
 For example you have bean:
 ```
@@ -28,7 +28,7 @@ Groovyc at compile time:
 Rules:
 - fields with already defined getter/setter are skipped;
 - final/static are skipped;
-- fields with all access modifiers support transformation; 
+- in other cases transformation is supported for fields with all access modifiers.
 
 ### Usage: 
 Maven dependency using jitpack (Choose version by "get it" button and add repository with dependency):
@@ -36,5 +36,11 @@ https://jitpack.io/#nanonull/bean-trace
 
 ### Depends on/Tested on:
 - version 1.0:
-    [groovy-2.4.5](http://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all/2.4.5)
+    [groovy-all-2.4.5](http://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all/2.4.5)
+
+### Build
+```
+gradle clean sourcesJar javadocJar fatJar
+```
+PS: just ignore javadoc errors...
 
