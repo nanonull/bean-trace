@@ -30,6 +30,19 @@ class TraceBeanTest extends GroovyTestCase {
         assert obj1.f1 == 10
     }
 
+    void 'test injects props'() {
+        def obj1 = TestApp.beanFactory.create(TestBean1, ['f1': 10])
+        assert obj1.f1 == 10
+        assert obj1.f2 == 0
+        assert obj1.f3 == 0
+        assert obj1._changes == 1
+        obj1.injectProperties(['f1': 11, f2: 22, f3:null])
+        assert obj1.f1 == 11
+        assert obj1.f2 == 22
+        assert obj1.f3 == null
+        assert obj1._changes == 4
+    }
+
     void 'test sys props are not used in getDependentBean '() {
         def b1 = TestApp.beanFactory.create(Bean1)
         def b2 = TestApp.beanFactory.create(Bean2, b1.initialBeanProperties)

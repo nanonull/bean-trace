@@ -41,13 +41,17 @@ trait TraceBean implements PropertyChangeListener {
     }
 
     void handleInputProps(Map<String, Object> initProps) {
+        injectProperties(initProps)
+        initialBeanProperties.putAll(initProps)
+    }
+
+    void injectProperties(Map<String, Object> props) {
         SYS_PROPS.each {
-            def removed = initProps.remove(it)
+            def removed = props.remove(it)
             handleInputSysProp(it, removed)
         }
-        initialBeanProperties.putAll(initProps)
 
-        initProps.each { entry ->
+        props.each { entry ->
             def property = entry.key
             def newValue = entry.value
 

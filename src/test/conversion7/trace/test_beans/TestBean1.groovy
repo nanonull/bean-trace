@@ -6,7 +6,7 @@ import conversion7.trace.BeanTransformation
 class TestBean1 extends BeanTestImpl {
     int f1
     int f2
-    int f3
+    Integer f3 = 0
 
     int getThisF3() {
         println 'getThisF3'
