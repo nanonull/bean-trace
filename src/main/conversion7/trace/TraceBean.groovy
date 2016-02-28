@@ -24,11 +24,21 @@ trait TraceBean implements PropertyChangeListener {
         propertyChangeSupport.firePropertyChange(prop, oldVal, newVal)
     }
 
+    /**Invoked by propertyChangeSupport*/
     void propertyChange(PropertyChangeEvent changeEvent) {
         this._changes += 1
         println("'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'")
     }
 
+    /**Invoked by transformed methods. <br>
+     * Also it could be invoked manually from bean code*/
+    void methodInvoked(String name) {
+        methodInvoked(getClass().getSimpleName(), name)
+    }
+
+    void methodInvoked(String className, String name) {
+        println(" Invoke '${name}' from $className")
+    }
 
     void handleInputProps(Map<String, Object> initProps) {
         SYS_PROPS.each {

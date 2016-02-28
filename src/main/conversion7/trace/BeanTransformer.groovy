@@ -2,9 +2,6 @@ package conversion7.trace
 
 import groovy.beans.BindableASTTransformation
 import org.codehaus.groovy.ast.*
-import org.codehaus.groovy.ast.expr.ArgumentListExpression
-import org.codehaus.groovy.ast.expr.ConstantExpression
-import org.codehaus.groovy.ast.expr.MethodCallExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.ast.stmt.ExpressionStatement
@@ -24,6 +21,7 @@ public class BeanTransformer extends BindableASTTransformation {
 
     static ClassNode TARGET_CLASS
     static final StringBuilder DEBUG = new StringBuilder()
+    static List<String> SYSTEM_METHODS = ["\$getStaticMetaClass"]
 
     static {
         init(TraceBean)
@@ -44,6 +42,7 @@ public class BeanTransformer extends BindableASTTransformation {
         ClassNode classNode = (ClassNode) nodes[1];
         ClassNode declaringClass = classNode.getDeclaringClass();
 
+        DEBUG.append("TRANSFORM: ").append(classNode).append("\n")
         if (isNodeMatchesTargetClass(classNode)) {
             transformBeanClass(classNode, annotationNode, source, declaringClass)
         } else {
@@ -60,30 +59,36 @@ public class BeanTransformer extends BindableASTTransformation {
     static void transformBeanClass(final ClassNode classNode, AnnotationNode node, SourceUnit source
                                    , ClassNode declaringClass) {
         wrapFieldsAndPropertiesForListening(source, classNode)
-        addStepInterceptors(source, classNode)
+        addMethodInterceptors(source, classNode)
     }
 
-    static void addStepInterceptors(final SourceUnit sourceUnit, final ClassNode classNode) {
+    static void throwDebugError() {
+        throwError(new Exception("DEBUGGING..."))
+    }
+
+    static void addMethodInterceptors(final SourceUnit sourceUnit, final ClassNode classNode) {
         classNode.methods.each { method ->
-            def methodName = method.name
-            if (!methodName.startsWith("step")) {
+            DEBUG.append("\n=====\n")
+            if (!(method.code instanceof BlockStatement) || method.name in SYSTEM_METHODS) {
+                DEBUG.append("SKIP METHOD: " + method.text).append("\n===\n")
                 return
             }
-            DEBUG.append(method.text).append("\n===\n")
+            DEBUG.append("HANDLING METHOD: " + method.text).append("\n")
 
-            def methodExpression = (BlockStatement) method.code
+            def methodExpression
+            try {
+                methodExpression = (BlockStatement) method.code
+            } catch (Throwable t) {
+                DEBUG.append("ERROR ON: " + method.text).append("\n===\n")
+                return
+            }
             DEBUG.append(methodExpression.text).append("\n===\n")
 
-            def newCode = new ExpressionStatement(
-                    new MethodCallExpression(
-                            new ConstantExpression("this")
-                            , "println"
-                            , new ArgumentListExpression([
-                            new ConstantExpression(classNode.nameWithoutPackage + ': ' + methodName)
-                    ])
-                    )
-            )
-            methodExpression.getStatements().add(0, newCode)
+            def addCode = new ExpressionStatement(callThisX("methodInvoked"
+                    , args(constX(classNode.nameWithoutPackage), constX(method.name))))
+            DEBUG.append("addCode: " + addCode.text).append("\n")
+
+            methodExpression.getStatements().add(0, addCode)
         }
 
     }

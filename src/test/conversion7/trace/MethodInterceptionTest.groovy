@@ -1,6 +1,6 @@
 package conversion7.trace
 
-class MethodInterceptionTest {
+class MethodInterceptionTest extends GroovyTestCase {
 
     void 'test default interception'() {
 
