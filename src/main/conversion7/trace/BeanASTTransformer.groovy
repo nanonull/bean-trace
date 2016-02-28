@@ -1,5 +1,6 @@
 package conversion7.trace
 
+import conversion7.trace.plain.TraceBean
 import groovy.beans.BindableASTTransformation
 import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.expr.VariableExpression
@@ -17,16 +18,17 @@ import java.lang.reflect.Modifier
 import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
-public class BeanTransformer extends BindableASTTransformation {
+public class BeanASTTransformer extends BindableASTTransformation {
 
-    static ClassNode TARGET_CLASS
+    static ClassNode TARGET_CLASS_NODE
     static final StringBuilder DEBUG = new StringBuilder()
 
     // TODO replace by checking presence of original method in trait (it means system member if present in trait)
+    // TODO or add @SkipHandling annotation
     /**Hide these methods from handling.*/
     static List<String> SYSTEM_METHODS = [
             "\$getStaticMetaClass"
-            , "initTracing"
+            , "initialization"
             , "methodInvoked"
             , "propertyChange"
             , "handleInputSysProp"
@@ -35,19 +37,21 @@ public class BeanTransformer extends BindableASTTransformation {
             , "println"
     ]
     static String RENAMED_PROPERTY_PREFIX = "_"
+    static Class TARGET_ROOT_CLASS
 
     static {
         init(TraceBean)
     }
 
     public static void init(Class rootBeanClass) {
-        TARGET_CLASS = ClassHelper.make(rootBeanClass)
+        TARGET_ROOT_CLASS = rootBeanClass
+        TARGET_CLASS_NODE = ClassHelper.make(rootBeanClass)
     }
 
     @Override
     public void visit(final ASTNode[] nodes, final SourceUnit source) {
-        if (TARGET_CLASS == null) {
-            throw new Exception("TARGET_CLASS is null!")
+        if (TARGET_CLASS_NODE == null) {
+            throw new Exception("TARGET_CLASS_NODE is null!")
         }
         DEBUG.setLength(0)
 
@@ -56,10 +60,10 @@ public class BeanTransformer extends BindableASTTransformation {
         ClassNode declaringClass = classNode.getDeclaringClass();
 
         DEBUG.append("TRANSFORM: ").append(classNode).append("\n")
-        if (isNodeMatchesTargetClass(classNode)) {
+        if (isNodeImplementsInterface(classNode)) {
             transformBeanClass(classNode, annotationNode, source, declaringClass)
         } else {
-            def wrongClassMsg = new SimpleMessage("ERROR: $classNode is selected for transformation, but doesn't implement $TARGET_CLASS"
+            def wrongClassMsg = new SimpleMessage("ERROR: $classNode is selected for transformation, but doesn't implement $TARGET_CLASS_NODE"
                     , source)
             throwError(new RuntimeException(wrongClassMsg.getMessage()))
         }
@@ -188,11 +192,19 @@ public class BeanTransformer extends BindableASTTransformation {
         return true
     }
 
-    static boolean isNodeMatchesTargetClass(ClassNode classNode) {
+    static boolean isNodeImplementsInterface(ClassNode classNode) {
+        DEBUG.append("=== isNodeImplementsInterface start for: ").append(classNode).append("\n")
+
         while (classNode != null) {
+            DEBUG.append("== current classNode: ").append(classNode).append("\n")
             if (classNode.interfaces.find {
-                DEBUG.append(it).append("\n")
-                return it == TARGET_CLASS
+                DEBUG.append(classNode).append(" implements ").append(it).append("\n")
+                if (it == TARGET_CLASS_NODE) {
+                    return true
+                }
+
+                return doesImplement(it, TARGET_CLASS_NODE)
+
             }) {
                 return true
             }
@@ -200,5 +212,23 @@ public class BeanTransformer extends BindableASTTransformation {
             classNode = classNode.superClass
         }
         return false
+    }
+
+    static boolean doesImplement(ClassNode child, ClassNode zuper) {
+        DEBUG.append(child).append(" has interfaces ").append(child.interfaces).append("\n")
+        if (child.interfaces.find {
+            DEBUG.append(child).append(" implements? ").append(it).append("\n")
+            if (it == zuper) {
+                return true
+            }
+
+            doesImplement(it, zuper)
+
+        }) {
+            return true
+        }
+
+        return false
+
     }
 }

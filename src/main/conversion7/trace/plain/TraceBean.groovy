@@ -1,4 +1,7 @@
-package conversion7.trace
+package conversion7.trace.plain
+
+import conversion7.trace.BeanException
+import conversion7.trace.PropertyWriteListeningSupport
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
@@ -12,7 +15,7 @@ trait TraceBean implements PropertyChangeListener {
     PropertyWriteListeningSupport propertyChangeSupport
     GroovyObject instanceOwner
 
-    void initTracing(GroovyObject instanceOwner) {
+    void initialization(GroovyObject instanceOwner) {
         this.instanceOwner = instanceOwner
         propertyChangeSupport = new PropertyWriteListeningSupport(instanceOwner);
         if (instanceOwner instanceof PropertyChangeListener) {
@@ -40,7 +43,7 @@ trait TraceBean implements PropertyChangeListener {
         propertyChangeSupport.removePropertyChangeListener(PropertyWriteListeningSupport.COMMON_LISTENER, listener)
     }
 
-    /**Called from setters created in conversion7.trace.BeanTransformer#wrapFieldsAndPropertiesForListening*/
+    /**Called from setters created in conversion7.trace.BeanASTTransformer#wrapFieldsAndPropertiesForListening*/
     public void firePropertyChange(String prop, Object oldVal, Object newVal) {
         propertyChangeSupport.firePropertyChange(prop, oldVal, newVal)
     }

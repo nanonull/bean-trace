@@ -1,9 +1,9 @@
-package conversion7.trace.test_beans
+package conversion7.trace.plain.test_beans
 
 import conversion7.trace.BeanTransformation
 
 @BeanTransformation
-class TestBean2InnerFieldWrite extends BeanTestImpl {
+class TestBean2InnerFieldWrite extends BaseTestBean {
     int f1
 
     @Override

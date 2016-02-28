@@ -1,4 +1,6 @@
 build
 *iml
 .idea
+/d3js
 .gradle
+/dumps

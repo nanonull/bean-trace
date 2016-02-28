@@ -1,14 +1,15 @@
-package conversion7.trace
+package conversion7.trace.plain
 
-import conversion7.trace.test_beans.BeanTestImpl
-import conversion7.trace.test_beans.TestApp
+import conversion7.trace.BeanTransformation
+import conversion7.trace.ConsoleBasedTest
+import conversion7.trace.plain.test_beans.BaseTestBean
 
 class MethodInterceptionTest extends ConsoleBasedTest {
 
     void 'covered in TraceBeanLogTest: test default interception'() {}
 
     void 'test custom interception'() {
-        def b = TestApp.beanFactory.create(Bean1)
+        def b = BaseTestBean.beanFactory.create(Bean1, null)
         assert b.mainRun == 1
         b.run3()
         assert b.mainRun == 2
@@ -27,7 +28,7 @@ class MethodInterceptionTest extends ConsoleBasedTest {
     }
 
     @BeanTransformation
-    static class Bean1 extends BeanTestImpl {
+    static class Bean1 extends BaseTestBean {
 
         int mainRun
 
@@ -63,7 +64,7 @@ class MethodInterceptionTest extends ConsoleBasedTest {
     }
 
     void 'test custom interception in ext classes'() {
-        def b = TestApp.beanFactory.create(Bean1Ext)
+        def b = BaseTestBean.beanFactory.create(Bean1Ext, null)
         assert b.mainRun == 2
 
         def expRows = """\

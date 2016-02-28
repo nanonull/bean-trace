@@ -1,9 +1,9 @@
-package conversion7.trace.test_beans
+package conversion7.trace.plain.test_beans
 
 import conversion7.trace.BeanTransformation
 
 @BeanTransformation
-class TestBean1 extends BeanTestImpl {
+class TestBean1 extends BaseTestBean {
     int f1
     int f2
     Integer f3 = 0

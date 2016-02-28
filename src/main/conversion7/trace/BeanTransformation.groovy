@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
-@org.codehaus.groovy.transform.GroovyASTTransformationClass("conversion7.trace.BeanTransformer")
+@org.codehaus.groovy.transform.GroovyASTTransformationClass("conversion7.trace.BeanASTTransformer")
 public @interface BeanTransformation {
 }

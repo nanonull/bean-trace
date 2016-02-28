@@ -1,10 +1,8 @@
 package conversion7.trace
 
-abstract class AbstractBeanFactory {
+import conversion7.trace.plain.TraceBean
 
-    public <C extends TraceBean> C create(final Class<C> type) {
-        return create(type, null)
-    }
+abstract class AbstractBeanFactory {
 
     public <C extends TraceBean> C create(final Class<C> type, Map<String, Object> initProps) {
         def instance = type.newInstance()
