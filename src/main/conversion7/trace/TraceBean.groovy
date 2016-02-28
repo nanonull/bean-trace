@@ -2,7 +2,6 @@ package conversion7.trace
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
-import java.beans.PropertyChangeSupport
 
 trait TraceBean implements PropertyChangeListener {
 
@@ -10,13 +9,31 @@ trait TraceBean implements PropertyChangeListener {
 
     int _changes
     Map initialBeanProperties = new TreeMap()
-    private PropertyChangeSupport propertyChangeSupport
+    PropertyWriteListeningSupport propertyChangeSupport
     GroovyObject instanceOwner
 
     void initTracing(GroovyObject instanceOwner) {
         propertyChangeSupport = new PropertyWriteListeningSupport(this);
-        propertyChangeSupport.addPropertyChangeListener(PropertyWriteListeningSupport.COMMON_LISTENER, this)
+        addPropertyChangeListener(this)
         this.instanceOwner = instanceOwner
+    }
+
+    /** #param propertyName - name as defined in class before compilation */
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener)
+    }
+
+    /** #param propertyName - name as defined in class before compilation */
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(propertyName, listener)
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(PropertyWriteListeningSupport.COMMON_LISTENER, listener)
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(PropertyWriteListeningSupport.COMMON_LISTENER, listener)
     }
 
     /**Called from setters created in conversion7.trace.BeanTransformer#wrapFieldsAndPropertiesForListening*/

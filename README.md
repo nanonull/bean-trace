@@ -1,8 +1,8 @@
 ## Runtime handling of <b>field<b>-writing and method-invoking.
 
 ### Lib goal:
-- logging/notifying about writes into properties/fields;
-- logging of methods execution TODO;
+- logging/notifying about writing into properties/fields;
+- logging of methods invocations;
 - beans dumping into tree structures TODO.
 
 #### Why use lib? - It handles direct field access (and even if field was not changed).

@@ -9,11 +9,11 @@ class TestBeanWithSteps1 extends BeanTestImpl {
     static List expLogLines =
             [
                     "TestBeanWithSteps1:  Invoke 'run' from TestBeanWithSteps1"
-                    , "TestBeanWithSteps1: '_f1' write: '1' >>> '2'"
+                    , "TestBeanWithSteps1: 'f1' write: '1' >>> '2'"
                     , "TestBeanWithSteps1:  Invoke 'step1' from TestBeanWithSteps1"
-                    , "TestBeanWithSteps1: '_f1' write: '2' >>> '3'"
+                    , "TestBeanWithSteps1: 'f1' write: '2' >>> '3'"
                     , "TestBeanWithSteps1:  Invoke 'step1_1' from TestBeanWithSteps1"
-                    , "TestBeanWithSteps1: '_f1' write: '3' >>> '100'"
+                    , "TestBeanWithSteps1: 'f1' write: '3' >>> '100'"
                     , "TestBeanWithSteps1: in step1_1"
                     , "TestBeanWithSteps1:  Invoke 'last manual method' from TestBeanWithSteps1"
             ]

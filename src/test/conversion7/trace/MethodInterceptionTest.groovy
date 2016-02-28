@@ -17,11 +17,11 @@ class MethodInterceptionTest extends ConsoleBasedTest {
             Bean1: MethodInterceptionTest\$Bean1 >>> run
             Bean1: MethodInterceptionTest\$Bean1 >>> runMain
             Bean1: MethodInterceptionTest\$Bean1 >>> runMain1_2
-            Bean1: '_mainRun' write: '0' >>> '1'
+            Bean1: 'mainRun' write: '0' >>> '1'
             Bean1: MethodInterceptionTest\$Bean1 >>> run3
             Bean1: MethodInterceptionTest\$Bean1 >>> runMain
             Bean1: MethodInterceptionTest\$Bean1 >>> runMain1_2
-            Bean1: '_mainRun' write: '1' >>> '2'""".stripIndent().split("\n").toList()
+            Bean1: 'mainRun' write: '1' >>> '2'""".stripIndent().split("\n").toList()
         def actualRows = consoleOutContent.toString().stripIndent().split("\r\n").toList()
         assert actualRows == expRows
     }
@@ -71,12 +71,12 @@ class MethodInterceptionTest extends ConsoleBasedTest {
             Bean1Ext: MethodInterceptionTest\$Bean1 >>> run
             Bean1Ext: MethodInterceptionTest\$Bean1 >>> runMain
             Bean1Ext: MethodInterceptionTest\$Bean1 >>> runMain1_2
-            Bean1Ext: '_mainRun' write: '0' >>> '1'
+            Bean1Ext: 'mainRun' write: '0' >>> '1'
             Bean1Ext: MethodInterceptionTest\$Bean1Ext >>> extLogic
             Bean1Ext: MethodInterceptionTest\$Bean1Ext >>> step1
             Bean1Ext: MethodInterceptionTest\$Bean1 >>> runMain
             Bean1Ext: MethodInterceptionTest\$Bean1 >>> runMain1_2
-            Bean1Ext: '_mainRun' write: '1' >>> '2'""".stripIndent().split("\n").toList()
+            Bean1Ext: 'mainRun' write: '1' >>> '2'""".stripIndent().split("\n").toList()
         def actualRows = consoleOutContent.toString().stripIndent().split("\r\n").toList()
         assert actualRows == expRows
     }

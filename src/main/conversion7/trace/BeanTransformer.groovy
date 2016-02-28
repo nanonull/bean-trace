@@ -34,6 +34,7 @@ public class BeanTransformer extends BindableASTTransformation {
             , "handleInputProps"
             , "println"
     ]
+    static String RENAMED_PROPERTY_PREFIX = "_"
 
     static {
         init(TraceBean)
@@ -156,12 +157,12 @@ public class BeanTransformer extends BindableASTTransformation {
             return false
         }
 
-        def newPropName = "_" + originalFieldName
+        def newPropName = RENAMED_PROPERTY_PREFIX + originalFieldName
         field.rename(newPropName)
 
         def fieldExpression = fieldX(field);
         Statement setterBlock =
-                stmt(callThisX("firePropertyChange", args(constX(field.getName())
+                stmt(callThisX("firePropertyChange", args(constX(originalFieldName)
                         , fieldExpression, assignX(fieldExpression, varX("value")))));
         MethodNode setter = new MethodNode(
                 setterName,

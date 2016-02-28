@@ -11,7 +11,6 @@ class TraceBeanLogTest extends ConsoleBasedTest {
 
         def beanWithSteps1 = TestApp.beanFactory.create(TestBeanWithSteps1)
         assert (consoleOutContent.toString()
-                .replaceAll(".*BaseBean - ", "")
                 .split("\r\n") as List) == TestBeanWithSteps1.expLogLines
     }
 
@@ -20,7 +19,6 @@ class TraceBeanLogTest extends ConsoleBasedTest {
 
         def bean = TestApp.beanFactory.create(TestBeanWithSteps1Ext)
         assert (consoleOutContent.toString()
-                .replaceAll(".*BaseBean - ", "")
                 .split("\r\n") as List) == TestBeanWithSteps1Ext.expLogLines2
     }
 
