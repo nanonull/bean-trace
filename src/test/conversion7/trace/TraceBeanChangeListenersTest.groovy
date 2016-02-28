@@ -1,14 +1,11 @@
 package conversion7.trace
 
-import conversion7.trace.test_beans.ClientBeanTestImpl
-import conversion7.trace.test_beans.TestBean1
-import conversion7.trace.test_beans.TestBean2Ext
-import conversion7.trace.test_beans.TestBean2InnerFieldWrite
+import conversion7.trace.test_beans.*
 
 class TraceBeanChangeListenersTest extends GroovyTestCase {
 
     void testPropertyChangeListenerWorks() {
-        def obj1 = TraceBeanFactory.create(TestBean1)
+        def obj1 = TestApp.beanFactory.create(TestBean1)
 
         obj1.f1++
         assert obj1._changes == 1
@@ -18,7 +15,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'test PropertyChangeListener Works for bean created with dynamic props'() {
-        def obj1 = TraceBeanFactory.create(TestBean1, ['someF': 10])
+        def obj1 = TestApp.beanFactory.create(TestBean1, ['someF': 10])
 
         obj1.f1++
         assert obj1._changes == 1
@@ -28,7 +25,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'test PropertyChangeListener Works after property updated from dynamic props'() {
-        def obj1 = TraceBeanFactory.create(TestBean1, ['f1': 10, f3: 10])
+        def obj1 = TestApp.beanFactory.create(TestBean1, ['f1': 10, f3: 10])
         assert obj1.f1 == 10
         assert obj1._changes == 2
 
@@ -41,7 +38,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'testPropertyChangeListener DifferentWays outside instance'() {
-        def obj1 = ClientBeanTestImpl.create(TestBean1)
+        def obj1 = BeanTestImpl.create(TestBean1)
 
         obj1.f1++
         assert obj1._changes == 1
@@ -62,15 +59,15 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'testPropertyChangeListener DifferentWays within instance'() {
-        def b1 = ClientBeanTestImpl.create(TestBean2InnerFieldWrite) // tested inside
+        def b1 = BeanTestImpl.create(TestBean2InnerFieldWrite) // tested inside
     }
 
     void 'testPropertyChangeListener DifferentWays within instance exts'() {
-        def b2 = ClientBeanTestImpl.create(TestBean2Ext) // tested inside
+        def b2 = BeanTestImpl.create(TestBean2Ext) // tested inside
     }
 
     void 'test PropertyChange listens NOT only for new values'() {
-        def obj1 = TraceBeanFactory.create(TestBean1)
+        def obj1 = TestApp.beanFactory.create(TestBean1)
 
         obj1.f1 = 10
         assert obj1._changes == 1

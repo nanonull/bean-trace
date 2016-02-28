@@ -19,7 +19,6 @@ import java.lang.reflect.Modifier
 
 import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 
-/**see transformBeanClass*/
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 public class BeanTransformer extends BindableASTTransformation {
 
@@ -98,8 +97,6 @@ public class BeanTransformer extends BindableASTTransformation {
                 }
             }
         }
-
-//        throwError(new Exception())
 
         // disable synth. generation
         def iterator = classNode.getProperties().iterator()

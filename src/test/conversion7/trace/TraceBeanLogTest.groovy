@@ -1,6 +1,6 @@
 package conversion7.trace
 
-import conversion7.trace.test_beans.ClientBeanTestImpl
+import conversion7.trace.test_beans.BeanTestImpl
 import conversion7.trace.test_beans.TestBeanWithSteps1
 import conversion7.trace.test_beans.TestBeanWithSteps1Ext
 
@@ -27,7 +27,7 @@ class TraceBeanLogTest extends GroovyTestCase {
     void 'test log in simple bean'() {
         setUpStreams()
 
-        def beanWithSteps1 = ClientBeanTestImpl.create(TestBeanWithSteps1)
+        def beanWithSteps1 = BeanTestImpl.create(TestBeanWithSteps1)
         assert (outContent.toString()
                 .replaceAll(".*BaseBean - ", "")
                 .split("\r\n") as List) == TestBeanWithSteps1.expLogLines
@@ -37,7 +37,7 @@ class TraceBeanLogTest extends GroovyTestCase {
     void 'test log in extended bean'() {
         setUpStreams()
 
-        def bean = ClientBeanTestImpl.create(TestBeanWithSteps1Ext)
+        def bean = BeanTestImpl.create(TestBeanWithSteps1Ext)
         assert (outContent.toString()
                 .replaceAll(".*BaseBean - ", "")
                 .split("\r\n") as List) == TestBeanWithSteps1Ext.expLogLines2

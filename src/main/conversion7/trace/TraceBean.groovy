@@ -58,6 +58,7 @@ trait TraceBean implements PropertyChangeListener {
         }
     }
 
+    /**Override if you have system properties input via properties map*/
     void handleInputSysProp(String propName, Object value) {
 
     }
