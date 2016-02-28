@@ -58,8 +58,8 @@ jar {
                 'Implementation-Version': version
     }
     baseName = project.name
-    from { zipTree(new File("", "build\\libs\\${baseName}-${version}-sources.jar")) }
-    from { zipTree(new File("", "build\\libs\\${baseName}-${version}-javadoc.jar")) }
+    from { zipTree(new File(project.rootDir, "/build/libs/${baseName}-${version}-sources.jar")) }
+    from { zipTree(new File(project.rootDir, "/build/libs/${baseName}-${version}-javadoc.jar")) }
 }
 
 
