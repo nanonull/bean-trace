@@ -32,7 +32,8 @@ Rules:
 - fields with already defined getter/setter are skipped;
 - final/static are skipped;
 - groovy-property field (default modifier) is transformed into private field with getter/setter (before groovy generates accessors itself);
-- fields with non-default access modifiers (private, protected, public) will have accessors with the same modifier.
+- fields with non-default access modifiers (private, protected, public) will have accessors with the same modifier;
+- notifications are injected into each accessor method.
 
 ### Usage: 
 Maven dependency using jitpack (Choose version by "get it" button and add repository with dependency):
