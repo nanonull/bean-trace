@@ -55,5 +55,3 @@ https://jitpack.io/#nanonull/bean-trace
 ```
 gradle clean install
 ```
-PS: just ignore javadoc errors...
-

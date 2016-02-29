@@ -120,28 +120,28 @@ class TraceBeanTransformTest extends GroovyTestCase {
         assert !findField(TestBeanWithAllFieldMods, "f3")
         assert !findField(TestBeanWithAllFieldMods, "f5")
 
-        assert findField(TestBeanWithAllFieldMods, "_f1").modifiers == Modifier.PUBLIC
-        assert findField(TestBeanWithAllFieldMods, "_f2").modifiers == Modifier.PROTECTED
-        assert findField(TestBeanWithAllFieldMods, "_f3").modifiers == Modifier.PRIVATE
-        assert findField(TestBeanWithAllFieldMods, "_f5").modifiers == Modifier.PRIVATE
+        assert findField(TestBeanWithAllFieldMods, "f1_").modifiers == Modifier.PUBLIC
+        assert findField(TestBeanWithAllFieldMods, "f2_").modifiers == Modifier.PROTECTED
+        assert findField(TestBeanWithAllFieldMods, "f3_").modifiers == Modifier.PRIVATE
+        assert findField(TestBeanWithAllFieldMods, "f5_").modifiers == Modifier.PRIVATE
 
         // read fields
-        assert b.@_f1 == 0
-        assert b.@_f2 == 0
-        assert b.@_f5 == 0
+        assert b.@f1_ == 0
+        assert b.@f2_ == 0
+        assert b.@f5_ == 0
 //        assert b.f3 == 0 // Won't fail in groovy
 
     }
 
     void 'test transformation created getters/setters'() {
-        assert !findMethod(TestBeanWithAllFieldMods, null, "get_f1")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "get_F1")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "get_f2")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "get_F2")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "get_f3")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "get_F3")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "get_f5")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "get_F5")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "getf1_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "getF1_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "getf2_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "getF2_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "getf3_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "getF3_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "getf5_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "getF5_")
 
         assert findMethod(TestBeanWithAllFieldMods, null, "getF1")
         assert findMethod(TestBeanWithAllFieldMods, null, "getF1").modifiers == Modifier.PUBLIC
@@ -152,14 +152,14 @@ class TraceBeanTransformTest extends GroovyTestCase {
         assert findMethod(TestBeanWithAllFieldMods, null, "getF5")
         assert Modifier.toString(findMethod(TestBeanWithAllFieldMods, null, "getF5").modifiers) == "public"
 
-        assert !findMethod(TestBeanWithAllFieldMods, null, "set_f1")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "set_F1")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "set_f2")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "set_F2")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "set_f3")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "set_F3")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "set_f5")
-        assert !findMethod(TestBeanWithAllFieldMods, null, "set_F5")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "setf1_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "setF1_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "setf2_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "setF2_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "setf3_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "setF3_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "setf5_")
+        assert !findMethod(TestBeanWithAllFieldMods, null, "setF5_")
 
         assert findMethod(TestBeanWithAllFieldMods, null, "setF1")
         assert findMethod(TestBeanWithAllFieldMods, null, "setF1").modifiers == Modifier.PUBLIC

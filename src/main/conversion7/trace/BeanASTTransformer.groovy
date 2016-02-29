@@ -2,6 +2,7 @@ package conversion7.trace
 
 import conversion7.trace.plain.TraceBean
 import groovy.beans.BindableASTTransformation
+import org.apache.commons.lang3.StringUtils
 import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
@@ -161,7 +162,7 @@ public class BeanASTTransformer extends BindableASTTransformation {
             return false
         }
 
-        def newPropName = RENAMED_PROPERTY_PREFIX + originalFieldName
+        def newPropName = StringUtils.uncapitalize(originalFieldName) + RENAMED_PROPERTY_PREFIX
         field.rename(newPropName)
 
         def fieldExpression = fieldX(field);
