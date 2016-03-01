@@ -10,7 +10,7 @@ class TraceBeanLogTest extends ConsoleBasedTest {
     //  works only for tests with setUpStreams?
     void 'test log in simple bean'() {
 
-        def beanWithSteps1 = BaseTestBean.beanFactory.create(TestBeanWithSteps1, null)
+        def beanWithSteps1 = BaseTestBean.beanFactory.create(TestBeanWithSteps1)
         assert (consoleOutContent.toString()
                 .split("\r\n") as List) == TestBeanWithSteps1.expLogLines
     }
@@ -18,7 +18,7 @@ class TraceBeanLogTest extends ConsoleBasedTest {
     //  works only for tests with setUpStreams?
     void 'test log in extended bean'() {
 
-        def bean = BaseTestBean.beanFactory.create(TestBeanWithSteps1Ext, null)
+        def bean = BaseTestBean.beanFactory.create(TestBeanWithSteps1Ext)
         assert (consoleOutContent.toString()
                 .split("\r\n") as List) == TestBeanWithSteps1Ext.expLogLines2
     }

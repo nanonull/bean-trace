@@ -5,13 +5,11 @@ import conversion7.trace.PropertyWriteListeningSupport
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.lang.reflect.Field
 
 trait TraceBean implements PropertyChangeListener, GroovyObject {
 
-    static List<String> SYS_PROPS = []
-
     int _changes
-    Map initialBeanProperties = new TreeMap()
     PropertyWriteListeningSupport propertyChangeSupport
     GroovyObject instanceOwner
 
@@ -21,61 +19,119 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         if (instanceOwner instanceof PropertyChangeListener) {
             addPropertyChangeListener(instanceOwner)
         } else {
-            throw new BeanException("Have to implement PropertyChangeListener! " + instanceOwner)
+            throw new BeanException(instanceOwner.class.getSimpleName() +
+                    " has to implement PropertyChangeListener! " + instanceOwner)
         }
 
-        // activate set/get override
         MetaClass metaClassLink = instanceOwner.metaClass
         Class classLink = instanceOwner.class
-        assert metaClassLink == classLink.metaClass
+//        assert metaClassLink == classLink.metaClass: "Dodge class or metaClass..."
+        // activate overiden accessors
         metaClassLink.getProperty = { String property ->
             try {
-//                classLink.println "\n=== getProperty: $property"
-                MetaBeanProperty field = (MetaBeanProperty) metaClassLink.getProperties().find { f ->
-//                    classLink.println "name: ${f.name}"
+                MetaBeanProperty metaBeanProperty = (MetaBeanProperty) metaClassLink.getProperties().find { f ->
                     f.name.equalsIgnoreCase(property)
                 }
-                if (field.getter) {
-                    return field.getter.invoke(instanceOwner)
-                } else {
-                    return field.field.field.get(instanceOwner)
+
+                if (metaBeanProperty) {
+                    return getPropertyValue(metaBeanProperty)
                 }
 
+                Field field = findField(classLink, property)
+                if (field) {
+                    field.setAccessible(true)
+                    return field.get(instanceOwner)
+                }
+
+
+                def accName = "get" + property
+                def accessor = metaClassLink.metaMethods.find { mm ->
+                    mm.name.equalsIgnoreCase(accName)
+                }
+                if (accessor) {
+                    return accessor.doMethodInvoke(instanceOwner, null)
+                }
+
+                throw new MissingPropertyException(property, classLink)
+
             } catch (Throwable e) {
-                throw new MissingPropertyException("Cause: " +e.getMessage() , ": $property", classLink)
+                throw new BeanException("getProperty failure: $property. Cause: ${e.getMessage()}", e)
             }
 
         }
         metaClassLink.setProperty = { String property, Object newValue ->
             try {
-//                classLink.println "\n=== setProperty: $property"
-                MetaBeanProperty field = (MetaBeanProperty) metaClassLink.getProperties().find { f ->
-//                    classLink.println "name: ${f.name}"
+                MetaBeanProperty metaBeanProperty = (MetaBeanProperty) metaClassLink.getProperties().find { f ->
                     f.name.equalsIgnoreCase(property)
                 }
-                if (field.setter) {
-                    if (newValue == null) {
-                        field.setter.invoke(instanceOwner, [newValue] as Object[])
-                    } else {
-                        field.setter.invoke(instanceOwner, newValue)
-                    }
-                } else {
-                    field.field.field.set(instanceOwner, newValue)
+                if (metaBeanProperty) {
+                    setPropertyValue(metaBeanProperty, newValue)
+                    return
                 }
 
-            } catch (Throwable e) {
-                throw new MissingPropertyException("Cause: " +e.getMessage() , ": $property", classLink)
+                Field field = findField(classLink, property)
+                if (field) {
+                    field.setAccessible(true)
+                    field.set(instanceOwner, newValue)
+                    return
+                }
 
+                def accName = "set" + property
+                def accessor = metaClassLink.metaMethods.find { mm ->
+                    mm.name.equalsIgnoreCase(accName)
+                }
+                if (accessor) {
+                    return accessor.doMethodInvoke(instanceOwner, newValue)
+                }
+
+                throw new MissingPropertyException(property, classLink)
+
+            } catch (Throwable e) {
+                throw new BeanException("setProperty failure: $property. Cause: ${e.getMessage()}", e)
             }
         }
     }
 
-/** #param propertyName - name as defined in class before compilation */
+    public Field findField(Class clazz, String fieldName)
+            throws NoSuchFieldException {
+        try {
+            return clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            Class superClass = clazz.getSuperclass();
+            if (superClass == null) {
+                return null;
+            } else {
+                return findField(superClass, fieldName);
+            }
+        }
+    }
+
+    Object getPropertyValue(MetaBeanProperty metaBeanProperty) {
+        if (metaBeanProperty.getter) {
+            return metaBeanProperty.getter.invoke(instanceOwner)
+        } else {
+            return metaBeanProperty.field.field.get(instanceOwner)
+        }
+    }
+
+    void setPropertyValue(MetaBeanProperty metaBeanProperty, Object newValue) {
+        if (metaBeanProperty.setter) {
+            if (newValue == null) {
+                metaBeanProperty.setter.invoke(instanceOwner, [newValue] as Object[])
+            } else {
+                metaBeanProperty.setter.invoke(instanceOwner, newValue)
+            }
+        } else {
+            metaBeanProperty.field.field.set(instanceOwner, newValue)
+        }
+    }
+
+    /** #param propertyName - name as defined in class before compilation */
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(propertyName, listener)
     }
 
-/** #param propertyName - name as defined in class before compilation */
+    /** #param propertyName - name as defined in class before compilation */
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(propertyName, listener)
     }
@@ -88,12 +144,12 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         propertyChangeSupport.removePropertyChangeListener(PropertyWriteListeningSupport.COMMON_LISTENER, listener)
     }
 
-/**Called from setters created in conversion7.trace.BeanASTTransformer#wrapFieldsAndPropertiesForListening*/
+    /**Called from setters created in conversion7.trace.BeanASTTransformer#wrapFieldsAndPropertiesForListening*/
     public void firePropertyChange(String prop, Object oldVal, Object newVal) {
         propertyChangeSupport.firePropertyChange(prop, oldVal, newVal)
     }
 
-/**Invoked by propertyChangeSupport*/
+    /**Invoked by propertyChangeSupport*/
     void propertyChange(PropertyChangeEvent changeEvent) {
         this._changes += 1
         println("'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'")
@@ -103,49 +159,11 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         methodInvoked(getClass().getSimpleName(), name)
     }
 
-/**Invoked from transformed methods. <br>
- * Also it could be invoked manually from bean code*/
+    /**Invoked from transformed methods. <br>
+     * Also it could be invoked manually from bean code*/
     void methodInvoked(String classNameWhereMethodDefined, String name) {
         println(" Invoke '${name}' from $classNameWhereMethodDefined")
     }
-
-    void handleInputProps(Map<String, Object> initProps) {
-        injectProperties(initProps)
-        initialBeanProperties.putAll(initProps)
-    }
-
-    void injectProperties(Map<String, Object> props) {
-        SYS_PROPS.each {
-            def removed = props.remove(it)
-            handleInputSysProp(it, removed)
-        }
-
-        props.each { entry ->
-            def property = entry.key
-            def newValue = entry.value
-
-            MetaBeanProperty field = instanceOwner.metaClass.getProperties()
-                    .find { f -> f.name == property } as MetaBeanProperty
-            def updateToMetaProps = false
-            if (field != null) {
-                instanceOwner.setProperty(property, newValue)
-            } else {
-                updateToMetaProps = true
-            }
-
-            if (updateToMetaProps) {
-                // fallback for dynamic properties
-                // listeners doesn't work after instance's fields are init in this way
-                instanceOwner.metaClass."$entry.key" = entry.value
-            }
-        }
-    }
-
-/**Override if you have system properties input via properties map*/
-    void handleInputSysProp(String propName, Object value) {
-
-    }
-
 
     void println() {
         println("")

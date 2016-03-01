@@ -7,8 +7,8 @@ class GraphBeanTestFactory<C extends BaseGraphTestBean> extends AbstractBeanFact
 
     GraphDumpWriter dumpWriter = new GraphDumpWriter()
 
-    public C create(final Class<C> type, Map<String, Object> initProps) {
-        def inst = super.create(type, initProps)
+    public C create(final Class<C> type) {
+        def inst = super.create(type)
         inst.node = new Node(type.getSimpleName())
         try {
             inst.run()

@@ -87,7 +87,10 @@ public class BeanASTTransformer extends BindableASTTransformation {
     static void addMethodInterceptors(final SourceUnit sourceUnit, final ClassNode classNode) {
         classNode.methods.each { method ->
             DEBUG.append("\n=====\n")
-            if (!(method.code instanceof BlockStatement) || method.name in SYSTEM_METHODS) {
+            if (!(method.code instanceof BlockStatement)
+                    || Modifier.isStatic(method.modifiers)
+                    || method.name in SYSTEM_METHODS
+            ) {
                 DEBUG.append("SKIP METHOD: " + method.text).append("\n===\n")
                 return
             }

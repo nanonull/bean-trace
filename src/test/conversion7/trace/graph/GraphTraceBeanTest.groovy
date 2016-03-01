@@ -16,7 +16,7 @@ public class GraphTraceBeanTest extends GroovyTestCase {
     }
 
     void 'test dump content'() {
-        def b = BaseGraphTestBean.beanFactory.create(GraphTestBean1, null)
+        def b = BaseGraphTestBean.beanFactory.create(GraphTestBean1)
         def expGraph = TraceUtils.GSON.fromJson(loadResource('GraphTraceBeanTest_1.json'), Node)
         def actGraph = TraceUtils.GSON.fromJson(b.getGraphJson(), Node)
         assert actGraph.name == expGraph.name
@@ -26,7 +26,7 @@ public class GraphTraceBeanTest extends GroovyTestCase {
     void 'test dump saved'() {
         // create dump dir from scratch:
         BaseGraphTestBean.beanFactory.dumpWriter.threadFolder = null
-        def b = BaseGraphTestBean.beanFactory.create(GraphTestBean1, null)
+        def b = BaseGraphTestBean.beanFactory.create(GraphTestBean1)
 
         def expDumpFile = BaseGraphTestBean.beanFactory.dumpWriter.threadFolder
         expDumpFile = new File(expDumpFile, GraphTestBean1.getSimpleName() + "_1")

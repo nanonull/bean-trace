@@ -9,7 +9,7 @@ class MethodInterceptionTest extends ConsoleBasedTest {
     void 'covered in TraceBeanLogTest: test default interception'() {}
 
     void 'test custom interception'() {
-        def b = BaseTestBean.beanFactory.create(Bean1, null)
+        def b = BaseTestBean.beanFactory.create(Bean1)
         assert b.mainRun == 1
         b.run3()
         assert b.mainRun == 2
@@ -64,7 +64,7 @@ class MethodInterceptionTest extends ConsoleBasedTest {
     }
 
     void 'test custom interception in ext classes'() {
-        def b = BaseTestBean.beanFactory.create(Bean1Ext, null)
+        def b = BaseTestBean.beanFactory.create(Bean1Ext)
         assert b.mainRun == 2
 
         def expRows = """\

@@ -13,6 +13,7 @@ Transformed class handles executed methods and changed properties in runtime. It
 
 #### When don't use:
 - renamed fields are not acceptable;
+- you need custom overridden getProperty/setProperty (maybe could be handled);
 - you need dump whole object at given execution points (TODO)
 
 ##### How field access intercepted
