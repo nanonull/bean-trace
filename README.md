@@ -1,5 +1,6 @@
 ## Runtime handling of <b>field<b>-writing and method-invoking.
-Transformed class handles executed methods and changed properties in runtime. It could help with debugging of complex execution flows, especially if no access to development-debug.
+Transformed class handles executed methods and changed properties in runtime. It could help with debugging of complex execution flows, especially if no access to development-debug.<br>
+[Example](https://github.com/nanonull/bean-trace/wiki/Tracing-example)
 
 ### Lib goal:
 - logging/notifying about writing into properties/fields;

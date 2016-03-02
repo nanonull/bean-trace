@@ -179,7 +179,7 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         return " Invoke '${name}' from $classOrigin"
     }
 
-    /**Invoked from transformed methods*/
+    /**Invoked from transformed stack*/
     void methodInvoked(String classNameWhereMethodDefined, String name) {
         logStep(classNameWhereMethodDefined, name)
     }

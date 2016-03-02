@@ -1,4 +1,4 @@
-package conversion7.trace.graph.methods
+package conversion7.trace.graph.stack
 
 import conversion7.trace.graph.StackTraceGraphTraceBean
 
