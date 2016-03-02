@@ -1,6 +1,5 @@
 package conversion7.trace.plain
 
-import conversion7.trace.plain.test_beans.BaseTestBean
 import conversion7.trace.plain.test_beans.TestBean1
 import conversion7.trace.plain.test_beans.TestBean2Ext
 import conversion7.trace.plain.test_beans.TestBean2InnerFieldWrite
@@ -11,7 +10,7 @@ import java.beans.PropertyChangeListener
 class TraceBeanChangeListenersTest extends GroovyTestCase {
 
     void testPropertyChangeListenerWorks() {
-        def obj1 = BaseTestBean.beanFactory.create(TestBean1)
+        def obj1 = BeanTestFactory.beanFactory.create(TestBean1)
 
         obj1.f1++
         assert obj1._changes == 1
@@ -21,7 +20,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'test PropertyChangeListener Works for bean created with dynamic props'() {
-        def obj1 = BaseTestBean.beanFactory.create(TestBean1)
+        def obj1 = BeanTestFactory.beanFactory.create(TestBean1)
 
         obj1.f1++
         assert obj1._changes == 1
@@ -32,7 +31,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
 
 
     void 'testPropertyChangeListener DifferentWays outside instance'() {
-        def obj1 = BaseTestBean.beanFactory.create(TestBean1)
+        def obj1 = BeanTestFactory.beanFactory.create(TestBean1)
 
         obj1.f1++
         assert obj1._changes == 1
@@ -53,15 +52,15 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'testPropertyChangeListener DifferentWays within instance'() {
-        def b1 = BaseTestBean.beanFactory.create(TestBean2InnerFieldWrite) // tested inside
+        def b1 = BeanTestFactory.beanFactory.create(TestBean2InnerFieldWrite) // tested inside
     }
 
     void 'testPropertyChangeListener DifferentWays within instance exts'() {
-        def b2 = BaseTestBean.beanFactory.create(TestBean2Ext) // tested inside
+        def b2 = BeanTestFactory.beanFactory.create(TestBean2Ext) // tested inside
     }
 
     void 'test PropertyChange listens NOT only for new values'() {
-        def obj1 = BaseTestBean.beanFactory.create(TestBean1)
+        def obj1 = BeanTestFactory.beanFactory.create(TestBean1)
 
         obj1.f1 = 10
         assert obj1._changes == 1
@@ -70,7 +69,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'test add custom property listener'() {
-        def b = BaseTestBean.beanFactory.create(TestBean1)
+        def b = BeanTestFactory.beanFactory.create(TestBean1)
         PropertyChangeEvent changeEvent
         b.addPropertyChangeListener('f1', new PropertyChangeListener() {
             @Override
@@ -93,7 +92,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'test remove custom property listener'() {
-        def b = BaseTestBean.beanFactory.create(TestBean1)
+        def b = BeanTestFactory.beanFactory.create(TestBean1)
         PropertyChangeEvent changeEvent
         def listener = new PropertyChangeListener() {
             @Override
@@ -122,7 +121,7 @@ class TraceBeanChangeListenersTest extends GroovyTestCase {
     }
 
     void 'test add/remove custom common property listener'() {
-        def b = BaseTestBean.beanFactory.create(TestBean1)
+        def b = BeanTestFactory.beanFactory.create(TestBean1)
         PropertyChangeEvent changeEvent
         def listener = new PropertyChangeListener() {
             @Override

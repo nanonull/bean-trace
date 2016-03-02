@@ -1,0 +1,56 @@
+{
+  "name": "root",
+  "children": [
+    {
+      "name": "MethodsGraphTraceBean1",
+      "children": [
+        {
+          "name": "run from MethodsGraphTraceBean1",
+          "children": [
+            {
+              "name": "field1: 0 --- 1",
+              "size": 2000
+            },
+            {
+              "name": "step1 from MethodsGraphTraceBean1",
+              "children": [
+                {
+                  "name": "step1_1 from MethodsGraphTraceBean1",
+                  "children": [
+                    {
+                      "name": "field1: 1 --- 2",
+                      "size": 2000
+                    }
+                  ],
+                  "size": 2000
+                },
+                {
+                  "name": "field1: 2 --- 3",
+                  "size": 2000
+                }
+              ],
+              "size": 2000
+            },
+            {
+              "name": "step2 from MethodsGraphTraceBean1",
+              "children": [
+                {
+                  "name": "field1: 3 --- 4",
+                  "size": 2000
+                }
+              ],
+              "size": 2000
+            },
+            {
+              "name": "field1: 4 --- 5",
+              "size": 2000
+            }
+          ],
+          "size": 2000
+        }
+      ],
+      "size": 2000
+    }
+  ],
+  "size": 2000
+}

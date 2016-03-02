@@ -3,8 +3,6 @@ package conversion7.trace.plain
 import conversion7.trace.BeanTransformation
 import conversion7.trace.plain.test_beans.BaseTestBean
 import conversion7.trace.plain.test_beans.Bean21WithStaticMethod
-import conversion7.trace.plain.test_beans.TestBean1
-
 
 class TraceBeanTest extends GroovyTestCase {
 
@@ -44,7 +42,7 @@ class TraceBeanTest extends GroovyTestCase {
     }
 
     void 'test fields access non-standard names'() {
-        def b = BaseTestBean.beanFactory.create(Bean11)
+        def b = BeanTestFactory.beanFactory.create(Bean11)
         assert b.Field_1 == 1
         assert b.Field_B2 == 2
         assert b.Field == 3
@@ -108,7 +106,7 @@ class TraceBeanTest extends GroovyTestCase {
     }
 
     void 'test fields access non-standard names and no transformation'() {
-        def b = BaseTestBean.beanFactory.create(Bean12NonStandardNamesNoTransform)
+        def b = BeanTestFactory.beanFactory.create(Bean12NonStandardNamesNoTransform)
         assert b.Field_1 == 1
         assert b.Field_B2 == 2
         assert b.Field == 3
@@ -172,7 +170,7 @@ class TraceBeanTest extends GroovyTestCase {
     }
 
     void 'test field access from ClientImpl into ClientBaseImpl'() {
-        def b = BaseTestBean.beanFactory.create(Bean15ClientImpl)
+        def b = BeanTestFactory.beanFactory.create(Bean15ClientImpl)
         b.field2 = 2
         assert b.field2 == 2
         b.field1 = 1
@@ -196,16 +194,16 @@ class TraceBeanTest extends GroovyTestCase {
     }
 
     void 'test method which look like accessor, but invoked as property'(){
-        def b = BaseTestBean.beanFactory.create(Bean15ClientImpl)
+        def b = BeanTestFactory.beanFactory.create(Bean15ClientImpl)
         assert b.getProperties().containsKey("class")
         assert b.properties.containsKey("class")
     }
 
     void 'test static method invoke'(){
-        def b = BaseTestBean.beanFactory.create(Bean20)
+        def b = BeanTestFactory.beanFactory.create(Bean20)
         assert b.intToStringFunc(2) == "2"
 
-        def b2 = BaseTestBean.beanFactory.create(Bean21WithStaticMethod)
+        def b2 = BeanTestFactory.beanFactory.create(Bean21WithStaticMethod)
         assert b2.intToStringFunc(2) == "2"
     }
 

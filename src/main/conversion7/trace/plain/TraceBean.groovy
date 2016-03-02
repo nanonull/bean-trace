@@ -2,6 +2,7 @@ package conversion7.trace.plain
 
 import conversion7.trace.BeanException
 import conversion7.trace.PropertyWriteListeningSupport
+import org.codehaus.groovy.runtime.metaclass.MultipleSetterProperty
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
@@ -26,7 +27,7 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         MetaClass metaClassLink = instanceOwner.metaClass
         Class classLink = instanceOwner.class
 //        assert metaClassLink == classLink.metaClass: "Dodge class or metaClass..."
-        // activate overiden accessors
+        // activate overridden accessors
         metaClassLink.getProperty = { String property ->
             try {
                 MetaBeanProperty metaBeanProperty = (MetaBeanProperty) metaClassLink.getProperties().find { f ->
@@ -61,12 +62,17 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         }
         metaClassLink.setProperty = { String property, Object newValue ->
             try {
-                MetaBeanProperty metaBeanProperty = (MetaBeanProperty) metaClassLink.getProperties().find { f ->
+                def metaProperty = metaClassLink.getProperties().find { f ->
                     f.name.equalsIgnoreCase(property)
                 }
-                if (metaBeanProperty) {
-                    setPropertyValue(metaBeanProperty, newValue)
+
+                if (metaProperty && metaProperty instanceof MetaBeanProperty) {
+                    setPropertyValue(metaProperty, newValue)
                     return
+                }
+
+                if (metaProperty instanceof MultipleSetterProperty) {
+                    // handle?
                 }
 
                 Field field = findField(classLink, property)
@@ -152,17 +158,30 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
     /**Invoked by propertyChangeSupport*/
     void propertyChange(PropertyChangeEvent changeEvent) {
         this._changes += 1
-        println("'${changeEvent.propertyName}' write: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'")
+        println(buildPropertyChangedMessage(changeEvent))
     }
 
-    void methodInvoked(String name) {
-        methodInvoked(getClass().getSimpleName(), name)
+    String buildPropertyChangedMessage(PropertyChangeEvent changeEvent) {
+        return "'${changeEvent.propertyName}' property: '${changeEvent.oldValue}' >>> '${changeEvent.newValue}'"
     }
 
-    /**Invoked from transformed methods. <br>
-     * Also it could be invoked manually from bean code*/
+    /**For manual logging in current class context*/
+    void logStep(String name) {
+        logStep(getClass().getSimpleName(), name)
+    }
+
+    /**Main output point*/
+    void logStep(String classOrigin, String name) {
+        println(buildLogStepMessage(classOrigin, name))
+    }
+
+    String buildLogStepMessage(String classOrigin, String name){
+        return " Invoke '${name}' from $classOrigin"
+    }
+
+    /**Invoked from transformed methods*/
     void methodInvoked(String classNameWhereMethodDefined, String name) {
-        println(" Invoke '${name}' from $classNameWhereMethodDefined")
+        logStep(classNameWhereMethodDefined, name)
     }
 
     void println() {

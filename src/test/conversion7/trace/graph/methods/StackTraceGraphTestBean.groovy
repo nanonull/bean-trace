@@ -1,12 +1,16 @@
-package conversion7.trace.graph
+package conversion7.trace.graph.methods
+
+import conversion7.trace.graph.StackTraceGraphTraceBean
 
 import java.beans.PropertyChangeEvent
 
-abstract class BaseGraphTestBean implements GraphTraceBean, Runnable {
+abstract class StackTraceGraphTestBean implements StackTraceGraphTraceBean {
 
-    public BaseGraphTestBean() {
+    StackTraceGraphTestBean(){
         initialization(this)
     }
+
+    abstract void run()
 
     String buildLogStepMessage(String classOrigin, String name) {
         return "$name from $classOrigin"

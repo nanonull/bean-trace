@@ -1,12 +1,16 @@
 {
-  "name": "GraphTestBean1",
+  "name": "root",
   "children": [
-        {"name": "run from GraphTestBean1", "size": 2000},
-        {"name": "method1 from GraphTestBean1", "size": 2000},
-        {"name": "method1_1 from GraphTestBean1", "size": 2000},
-        {"name": "Value 1-1", "size": 2000},
-        {"name": "method2 from GraphTestBean1", "size": 2000},
-        {"name": "method2_2 from GraphTestBean1", "size": 2000},
-        {"name": "Value 2-2", "size": 2000}
+        {"name":"GraphTestBean1","size":2000,
+          "children": [
+            {"name": "run from GraphTestBean1", "size": 2000},
+            {"name": "method1 from GraphTestBean1", "size": 2000},
+            {"name": "method1_1 from GraphTestBean1", "size": 2000},
+            {"name": "field1: 0 --- 1", "size": 2000},
+            {"name": "method2 from GraphTestBean1", "size": 2000},
+            {"name": "method2_2 from GraphTestBean1", "size": 2000},
+            {"name": "field1: 1 --- 2", "size": 2000}
+            ]
+        }
   ]
 }

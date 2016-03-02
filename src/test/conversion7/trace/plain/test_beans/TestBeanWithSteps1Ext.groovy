@@ -9,26 +9,26 @@ class TestBeanWithSteps1Ext extends TestBeanWithSteps1 {
             [
                     "TestBeanWithSteps1Ext:  Invoke 'run' from TestBeanWithSteps1Ext"
                     , "TestBeanWithSteps1Ext:  Invoke 'run' from TestBeanWithSteps1"
-                    , "TestBeanWithSteps1Ext: 'f1' write: '1' >>> '2'"
+                    , "TestBeanWithSteps1Ext: 'f1' property: '1' >>> '2'"
                     , "TestBeanWithSteps1Ext:  Invoke 'step1' from TestBeanWithSteps1"
-                    , "TestBeanWithSteps1Ext: 'f1' write: '2' >>> '3'"
+                    , "TestBeanWithSteps1Ext: 'f1' property: '2' >>> '3'"
                     , "TestBeanWithSteps1Ext:  Invoke 'step1_1' from TestBeanWithSteps1"
-                    , "TestBeanWithSteps1Ext: 'f1' write: '3' >>> '100'"
+                    , "TestBeanWithSteps1Ext: 'f1' property: '3' >>> '100'"
                     , "TestBeanWithSteps1Ext: in step1_1"
                     , "TestBeanWithSteps1Ext:  Invoke 'last manual method' from TestBeanWithSteps1Ext"
             ] + [
                     "TestBeanWithSteps1Ext:  Invoke 'manualStep' from TestBeanWithSteps1Ext"
-                    , "TestBeanWithSteps1Ext: 'f1' write: '100' >>> '101'"
+                    , "TestBeanWithSteps1Ext: 'f1' property: '100' >>> '101'"
                     , "TestBeanWithSteps1Ext:  Invoke 'step2' from TestBeanWithSteps1Ext"
-                    , "TestBeanWithSteps1Ext: 'f1' write: '101' >>> '102'"
+                    , "TestBeanWithSteps1Ext: 'f1' property: '101' >>> '102'"
                     , "TestBeanWithSteps1Ext:  Invoke 'step2_1' from TestBeanWithSteps1Ext"
-                    , "TestBeanWithSteps1Ext: 'f1' write: '102' >>> '103'"
+                    , "TestBeanWithSteps1Ext: 'f1' property: '102' >>> '103'"
             ]
 
     @Override
     void run() {
         super.run()
-        methodInvoked("manualStep")
+        logStep("manualStep")
 
         f1++
         assert f1 == FIELD1_BEAN1_FINAL + 1
