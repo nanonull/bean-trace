@@ -3,9 +3,10 @@ package conversion7.trace.graph.stack
 import conversion7.trace.BeanTransformation
 
 @BeanTransformation
-class StackTraceGraphTraceBean1 extends StackTraceGraphTestBean {
+class StackTraceGraphBean1 extends StackTestGraphBean {
 
     int field1
+
     @Override
     void run() {
         field1++

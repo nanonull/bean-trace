@@ -1,12 +1,12 @@
 package conversion7.trace.graph.stack
 
-import conversion7.trace.graph.StackTraceGraphTraceBean
+import conversion7.trace.graph.StackTraceGraphBean
 
 import java.beans.PropertyChangeEvent
 
-abstract class StackTraceGraphTestBean implements StackTraceGraphTraceBean {
+abstract class StackTestGraphBean implements StackTraceGraphBean {
 
-    StackTraceGraphTestBean(){
+    StackTestGraphBean() {
         initialization(this)
     }
 

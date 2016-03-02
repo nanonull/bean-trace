@@ -4,7 +4,7 @@ import conversion7.trace.BeanException
 
 import java.beans.PropertyChangeEvent
 
-trait StackTraceGraphTraceBean implements GraphTraceBean {
+trait StackTraceGraphBean implements GraphTraceBean {
     StackTraceElement lastTrace
 
     void resolveMethodPositionOnStack() {

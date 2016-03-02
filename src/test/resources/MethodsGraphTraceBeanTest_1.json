@@ -2,20 +2,20 @@
   "name": "root",
   "children": [
     {
-      "name": "StackTraceGraphTraceBean1",
+      "name": "StackTraceGraphBean1",
       "children": [
         {
-          "name": "run from StackTraceGraphTraceBean1",
+          "name": "run from StackTraceGraphBean1",
           "children": [
             {
               "name": "field1: 0 --- 1",
               "size": 2000
             },
             {
-              "name": "step1 from StackTraceGraphTraceBean1",
+              "name": "step1 from StackTraceGraphBean1",
               "children": [
                 {
-                  "name": "step1_1 from StackTraceGraphTraceBean1",
+                  "name": "step1_1 from StackTraceGraphBean1",
                   "children": [
                     {
                       "name": "field1: 1 --- 2",
@@ -32,7 +32,7 @@
               "size": 2000
             },
             {
-              "name": "step2 from StackTraceGraphTraceBean1",
+              "name": "step2 from StackTraceGraphBean1",
               "children": [
                 {
                   "name": "field1: 3 --- 4",

@@ -7,7 +7,7 @@ import java.beans.PropertyChangeEvent
 
 /**By default this graph will have 2 levels: root and all children.<br>
  * You need organize graph logic in your Impl.<br>
- * Example of impl: StackTraceGraphTraceBean<p>
+ * Example of impl: StackTraceGraphBean<p>
  * Finally after bean completed its execution graph could be printed with:<br>
  * void saveBeanGraph(GraphTraceBean bean) {<br>
  new GraphDumpWriter().write(bean.getClass().getSimpleName(), bean.getGraphJson())<br>}*/

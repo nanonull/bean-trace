@@ -4,7 +4,7 @@ import conversion7.trace.AbstractBeanFactory
 import conversion7.trace.graph.GraphTraceBean
 import conversion7.trace.utils.GraphDumpWriter
 
-class MethodsGraphBeanTestFactory<C extends StackTraceGraphTestBean> extends AbstractBeanFactory {
+class MethodsGraphBeanTestFactory<C extends StackTestGraphBean> extends AbstractBeanFactory {
 
     static MethodsGraphBeanTestFactory factory = new MethodsGraphBeanTestFactory()
     GraphDumpWriter dumpWriter = new GraphDumpWriter()
