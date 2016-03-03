@@ -1,8 +1,11 @@
 package conversion7.trace.plain
 
+import conversion7.trace.BeanException
 import conversion7.trace.BeanTransformation
 import conversion7.trace.plain.test_beans.BaseTestBean
 import conversion7.trace.plain.test_beans.Bean21WithStaticMethod
+
+import static conversion7.trace.TestUtils.assertWillFail
 
 class TraceBeanTest extends GroovyTestCase {
 
@@ -193,13 +196,13 @@ class TraceBeanTest extends GroovyTestCase {
         }
     }
 
-    void 'test method which look like accessor, but invoked as property'(){
+    void 'test method which look like accessor, but invoked as property'() {
         def b = BeanTestFactory.beanFactory.create(Bean15ClientImpl)
         assert b.getProperties().containsKey("class")
         assert b.properties.containsKey("class")
     }
 
-    void 'test static method invoke'(){
+    void 'test static method invoke'() {
         def b = BeanTestFactory.beanFactory.create(Bean20)
         assert b.intToStringFunc(2) == "2"
 
@@ -207,7 +210,7 @@ class TraceBeanTest extends GroovyTestCase {
         assert b2.intToStringFunc(2) == "2"
     }
 
-    static class Bean20 extends BaseTestBean{
+    static class Bean20 extends BaseTestBean {
 
         @Override
         void run() {
@@ -216,6 +219,86 @@ class TraceBeanTest extends GroovyTestCase {
 
         static String intToStringFunc(int num) {
             return num.toString()
+        }
+    }
+
+    void 'test class-casting error on set'() {
+        def b = BeanTestFactory.beanFactory.create(Bean33)
+        assertWillFail(BeanException, ".*setProperty failure: f2. Cause: argument type mismatch.*",
+                { b.f2 += new Double(1) })
+        assertWillFail(BeanException, ".*setProperty failure: f2. Cause: argument type mismatch.*",
+                { b.f2 += 1.2d })
+        assertWillFail(BeanException, ".*setProperty failure: f1. Cause: argument type mismatch.*",
+                { b.f1 += 1f })
+        assertWillFail(BeanException, ".*setProperty failure: f1. Cause: argument type mismatch.*",
+                { b.f1 += 1.2f })
+
+    }
+
+    @BeanTransformation
+    static class Bean33 extends BaseTestBean {
+        int f1
+        BigDecimal f2
+
+        @Override
+        void run() {
+            f2 = 0
+
+            assertWillFail(BeanException, ".*setProperty failure: f2. Cause: argument type mismatch.*",
+                    { f2 += new Double(1) })
+            assertWillFail(BeanException, ".*setProperty failure: f2. Cause: argument type mismatch.*",
+                    { f2 += 1.2d })
+            assertWillFail(BeanException, ".*setProperty failure: f1. Cause: argument type mismatch.*",
+                    { f1 += 1f })
+            assertWillFail(BeanException, ".*setProperty failure: f1. Cause: argument type mismatch.*",
+                    { f1 += 1.2f })
+
+        }
+    }
+
+    void 'test injects props'() {
+        def b = BeanTestFactory.beanFactory.create(Bean34)
+        b.injectProperties([f1: 1])
+        assert b.f1 == 1
+
+        assertWillFail(BeanException, ".*setProperty failure: f1. Cause: IllegalArgumentException: null.*",
+                { b.injectProperties([f1: null]) })
+        assert b.f1 == 1
+
+        b.injectProperties([f2: 2.toBigDecimal()])
+        assert b.f2 == 2.toBigDecimal()
+
+        assertWillFail(BeanException, ".*setProperty failure: f2. Cause: argument type mismatch.*",
+                { b.injectProperties([f2: 3]) })
+        assert b.f2 == 2.toBigDecimal()
+
+        b.injectProperties([f2: null])
+        assert b.f2 == null
+    }
+
+    @BeanTransformation
+    static class Bean34 extends BaseTestBean {
+        int f1
+        BigDecimal f2
+
+        @Override
+        void run() {
+            injectProperties([f1: 1])
+            assert f1 == 1
+
+            assertWillFail(BeanException, ".*setProperty failure: f1. Cause: IllegalArgumentException: null.*",
+                    { injectProperties([f1: null]) })
+            assert f1 == 1
+
+            injectProperties([f2: 2.toBigDecimal()])
+            assert f2 == 2.toBigDecimal()
+
+            assertWillFail(BeanException, ".*setProperty failure: f2. Cause: argument type mismatch.*",
+                    { injectProperties([f2: 3]) })
+            assert f2 == 2.toBigDecimal()
+
+            injectProperties([f2: null])
+            assert f2 == null
         }
     }
 

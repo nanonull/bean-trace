@@ -56,10 +56,14 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
                 throw new MissingPropertyException(property, classLink)
 
             } catch (Throwable e) {
-                throw new BeanException("getProperty failure: $property. Cause: ${e.getMessage()}", e)
+                def errMsg = e.getMessage()
+                if (!errMsg) {
+                    errMsg = e.getClass().getSimpleName() + ": $errMsg"
+                }
+                throw new BeanException("getProperty failure: $property. Cause: ${errMsg}", e)
             }
-
         }
+
         metaClassLink.setProperty = { String property, Object newValue ->
             try {
                 def metaProperty = metaClassLink.getProperties().find { f ->
@@ -93,13 +97,16 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
                 throw new MissingPropertyException(property, classLink)
 
             } catch (Throwable e) {
-                throw new BeanException("setProperty failure: $property. Cause: ${e.getMessage()}", e)
+                def errMsg = e.getMessage()
+                if (!errMsg) {
+                    errMsg = e.getClass().getSimpleName() + ": $errMsg"
+                }
+                throw new BeanException("setProperty failure: $property. Cause: ${errMsg}", e)
             }
         }
     }
 
-    public Field findField(Class clazz, String fieldName)
-            throws NoSuchFieldException {
+    public Field findField(Class clazz, String fieldName) throws NoSuchFieldException {
         try {
             return clazz.getDeclaredField(fieldName);
         } catch (NoSuchFieldException e) {
@@ -129,6 +136,28 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
             }
         } else {
             metaBeanProperty.field.field.set(instanceOwner, newValue)
+        }
+    }
+
+    void injectProperties(Map<String, Object> props) {
+        props.each { entry ->
+            def property = entry.key
+            def newValue = entry.value
+
+            MetaBeanProperty field = instanceOwner.metaClass.getProperties()
+                    .find { f -> f.name == property } as MetaBeanProperty
+            def updateToMetaProps = false
+            if (field != null) {
+                instanceOwner.setProperty(property, newValue)
+            } else {
+                updateToMetaProps = true
+            }
+
+            if (updateToMetaProps) {
+                // fallback for dynamic properties
+                // listeners doesn't work after instance's fields are init in this way
+                instanceOwner.metaClass."$entry.key" = entry.value
+            }
         }
     }
 
@@ -175,7 +204,7 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         println(buildLogStepMessage(classOrigin, name))
     }
 
-    String buildLogStepMessage(String classOrigin, String name){
+    String buildLogStepMessage(String classOrigin, String name) {
         return " Invoke '${name}' from $classOrigin"
     }
 
