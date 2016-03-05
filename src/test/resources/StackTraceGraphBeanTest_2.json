@@ -1,0 +1,24 @@
+{
+  "name": "root",
+  "children": [
+    {
+      "name": "Bean1",
+      "children": [
+        {
+          "name": "run from StackTraceGraphBeanTest$Bean1",
+          "size": 2000
+        },
+        {
+          "name": "f1: 0 --- 1",
+          "size": 2000
+        },
+        {
+          "name": "step1 from StackTraceGraphBeanTest$Bean1",
+          "size": 2000
+        }
+      ],
+      "size": 2000
+    }
+  ],
+  "size": 2000
+}

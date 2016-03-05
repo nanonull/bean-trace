@@ -20,22 +20,29 @@ trait StackTraceGraphBean implements GraphTraceBean {
             }
         }
 
-        if (!newTrace) {
-            throw new BeanException(myClass.getName() + " was not found in stacktrace!")
-        }
+        if (newTrace) {
+            // chose active node for next child node by comparing trace positions:
+            activeNode = findActiveNodeOnStackFrom(getStackTraceNodeActive(), false)
+            if (!activeNode) {
+                activeNode = getFallbackRootNode()
+            }
 
-        // chose active node for next child node by comparing trace positions:
-        activeNode = getActiveNodeOnStackFrom(stackTraceNodeActive, false)
-        if (!activeNode) {
-            activeNode = root.children.last()
+            lastTrace = newTrace
+        } else {
+            activeNode = getFallbackRootNode()
         }
+    }
 
-        lastTrace = newTrace
+    def getFallbackRootNode(){
+        root.children.last()
     }
 
     @Override
     void propertyChange(PropertyChangeEvent changeEvent) {
-        activeNode = getActiveNodeOnStackFrom(stackTraceNodeActive, true)
+        activeNode = findActiveNodeOnStackFrom(getStackTraceNodeActive(), false)
+        if (!activeNode) {
+            activeNode = getFallbackRootNode()
+        }
         super.propertyChange(changeEvent)
 
         (lastCreatedNode as StackTraceNode).with {
@@ -43,7 +50,7 @@ trait StackTraceGraphBean implements GraphTraceBean {
         }
     }
 
-    StackTraceNode getActiveNodeOnStackFrom(StackTraceNode input, boolean mustFound) {
+    StackTraceNode findActiveNodeOnStackFrom(StackTraceNode input, boolean mustFound) {
         def node
         Thread.currentThread().stackTrace.find { trace ->
             node = input.findFirstNodeWithTraceElement(trace)
