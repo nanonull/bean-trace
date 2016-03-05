@@ -3,12 +3,12 @@ package conversion7.trace.graph
 import conversion7.trace.AbstractBeanFactory
 import conversion7.trace.utils.GraphDumpWriter
 
-class GraphBeanTestFactory<C extends BaseGraphTestBean> extends AbstractBeanFactory {
+class GraphBeanTestFactory extends AbstractBeanFactory {
 
     public static GraphBeanTestFactory beanFactory = new GraphBeanTestFactory()
     GraphDumpWriter dumpWriter = new GraphDumpWriter()
 
-    public C create(final Class<C> type) {
+    public <C extends BaseGraphTestBean> C create(final Class<C> type) {
         def inst = super.create(type)
         inst.addNodeAtCurrentLevel(type.getSimpleName())
         try {
