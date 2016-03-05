@@ -150,10 +150,10 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
             def property = entry.key
             def newValue = entry.value
 
-            MetaBeanProperty field = instanceOwner.metaClass.getProperties()
-                    .find { f -> f.name == property } as MetaBeanProperty
+            MetaBeanProperty beanProperty = instanceOwner.metaClass.getProperties()
+                    .find { it.name.equalsIgnoreCase property } as MetaBeanProperty
             def updateToMetaProps = false
-            if (field != null) {
+            if (beanProperty) {
                 instanceOwner.setProperty(property, newValue)
             } else {
                 updateToMetaProps = true

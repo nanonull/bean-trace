@@ -2,6 +2,7 @@ package conversion7.trace.plain
 
 import conversion7.trace.BeanException
 import conversion7.trace.BeanTransformation
+import conversion7.trace.TestUtils
 import conversion7.trace.plain.test_beans.BaseTestBean
 import conversion7.trace.plain.test_beans.Bean21WithStaticMethod
 
