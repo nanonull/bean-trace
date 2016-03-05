@@ -4,12 +4,12 @@ import conversion7.trace.AbstractBeanFactory
 import conversion7.trace.graph.GraphTraceBean
 import conversion7.trace.utils.GraphDumpWriter
 
-class MethodsGraphBeanTestFactory<C extends StackTestGraphBean> extends AbstractBeanFactory {
+class StackTraceBeanTestFactory extends AbstractBeanFactory {
 
-    static MethodsGraphBeanTestFactory factory = new MethodsGraphBeanTestFactory()
+    static StackTraceBeanTestFactory factory = new StackTraceBeanTestFactory()
     GraphDumpWriter dumpWriter = new GraphDumpWriter()
 
-    public C create(final Class<C> type) {
+    public <C extends StackTestGraphBean> C create(final Class<C> type) {
         def inst = super.create(type)
         inst.addNodeAtCurrentLevel(type.getSimpleName())
         def error

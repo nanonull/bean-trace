@@ -1,7 +1,5 @@
 package conversion7.trace.graph.stack
 
-import conversion7.trace.graph.StackTraceGraphBean
-
 import java.beans.PropertyChangeEvent
 
 abstract class StackTestGraphBean implements StackTraceGraphBean {

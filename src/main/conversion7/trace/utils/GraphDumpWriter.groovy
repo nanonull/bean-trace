@@ -10,13 +10,13 @@ class GraphDumpWriter {
     String threadName
     String startedAtStamp
     File threadFolder
-    File templateFile
+    @Lazy
+    String templateFile = ResourcesReader.loadResource("d3js_index.html")
     int dumpIndex = 1
 
     GraphDumpWriter() {
         threadName = Thread.currentThread().getName()
         startedAtStamp = getTimeStamp(new Date(), "yyyy_MM_dd_HH_mm_ss")
-        templateFile = ResourcesReader.findResource("d3js_index.html")
     }
 
     void createThreadFolder() {
@@ -44,7 +44,7 @@ class GraphDumpWriter {
                 , Charsets.UTF_8.name())
 
         def dumpIndexFile = new File(dumpDir, 'index.html')
-        FileUtils.copyFile(templateFile, dumpIndexFile)
+        FileUtils.writeStringToFile(dumpIndexFile, templateFile)
     }
 
 }

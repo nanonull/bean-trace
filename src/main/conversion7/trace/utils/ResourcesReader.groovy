@@ -6,7 +6,4 @@ class ResourcesReader {
         return ResourcesReader.getClassLoader().getResourceAsStream(fileName).text
     }
 
-    static File findResource(final String relativeFilePath) {
-        return new File(ResourcesReader.getClassLoader().getResource(relativeFilePath).toURI())
-    }
 }

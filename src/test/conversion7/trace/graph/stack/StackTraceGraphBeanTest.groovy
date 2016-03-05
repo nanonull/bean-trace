@@ -7,7 +7,7 @@ import conversion7.trace.utils.TraceUtils
 class StackTraceGraphBeanTest extends GroovyTestCase {
 
     void 'test 1'() {
-        def b = MethodsGraphBeanTestFactory.factory.create(StackTraceGraphBean1)
+        def b = StackTraceBeanTestFactory.factory.create(StackTraceGraphBean1)
         def graphJson = b.getGraphJson()
         println graphJson
         def act = TraceUtils.GSON.fromJson(graphJson, Node)

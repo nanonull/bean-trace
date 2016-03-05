@@ -1,5 +1,6 @@
-package conversion7.trace.graph
+package conversion7.trace.graph.stack
 
+import conversion7.trace.graph.Node
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
@@ -16,7 +17,7 @@ class StackTraceNode extends Node {
     }
 
     StackTraceNode findFirstNodeWithTraceElement(StackTraceElement stackTraceElement) {
-        if (trace){
+        if (trace) {
             if (areEqualStackTraceElements(trace, stackTraceElement)) {
                 return this
             }

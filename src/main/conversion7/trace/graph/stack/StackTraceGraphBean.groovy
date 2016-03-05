@@ -1,6 +1,8 @@
-package conversion7.trace.graph
+package conversion7.trace.graph.stack
 
 import conversion7.trace.BeanException
+import conversion7.trace.graph.GraphTraceBean
+import conversion7.trace.graph.Node
 
 import java.beans.PropertyChangeEvent
 
