@@ -7,26 +7,26 @@ import java.beans.PropertyChangeSupport
 class PropertyWriteListeningSupport extends PropertyChangeSupport {
     public static final String COMMON_LISTENER = "COMMON_LISTENER"
 
-    Object sourceBean
+    Object source
 
-    PropertyWriteListeningSupport(Object sourceBean) {
-        super(sourceBean)
-        this.sourceBean = sourceBean
+    PropertyWriteListeningSupport(Object source) {
+        super(source)
+        this.source = source
     }
 
     @Override
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-        firePropertyChange(new PropertyChangeEvent(sourceBean, propertyName, oldValue, newValue));
+        firePropertyChange(new PropertyChangeEvent(source, propertyName, oldValue, newValue));
     }
 
     @Override
     public void firePropertyChange(String propertyName, int oldValue, int newValue) {
-        firePropertyChange(new PropertyChangeEvent(sourceBean, propertyName, oldValue, newValue));
+        firePropertyChange(new PropertyChangeEvent(source, propertyName, oldValue, newValue));
     }
 
     @Override
     public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        firePropertyChange(new PropertyChangeEvent(sourceBean, propertyName, oldValue, newValue));
+        firePropertyChange(new PropertyChangeEvent(source, propertyName, oldValue, newValue));
     }
 
     public void firePropertyChange(PropertyChangeEvent event) {

@@ -18,7 +18,9 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         this.instanceOwner = instanceOwner
         propertyChangeSupport = new PropertyWriteListeningSupport(instanceOwner);
         if (instanceOwner instanceof PropertyChangeListener) {
-            addPropertyChangeListener(instanceOwner)
+            if (shouldTrace()) {
+                addPropertyChangeListener(instanceOwner)
+            }
         } else {
             throw new BeanException(instanceOwner.class.getSimpleName() +
                     " has to implement PropertyChangeListener! " + instanceOwner)
@@ -119,6 +121,10 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
         }
     }
 
+    boolean shouldTrace(){
+        return true
+    }
+
     Object getPropertyValue(MetaBeanProperty metaBeanProperty) {
         if (metaBeanProperty.getter) {
             return metaBeanProperty.getter.invoke(instanceOwner)
@@ -181,7 +187,9 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
 
     /**Called from setters created in conversion7.trace.BeanASTTransformer#wrapFieldsAndPropertiesForListening*/
     public void firePropertyChange(String prop, Object oldVal, Object newVal) {
-        propertyChangeSupport.firePropertyChange(prop, oldVal, newVal)
+        if (shouldTrace()) {
+            propertyChangeSupport.firePropertyChange(prop, oldVal, newVal)
+        }
     }
 
     /**Invoked by propertyChangeSupport*/
@@ -210,7 +218,9 @@ trait TraceBean implements PropertyChangeListener, GroovyObject {
 
     /**Invoked from transformed stack*/
     void methodInvoked(String classNameWhereMethodDefined, String name) {
-        logStep(classNameWhereMethodDefined, name)
+        if (shouldTrace()){
+            logStep(classNameWhereMethodDefined, name)
+        }
     }
 
     void println() {

@@ -36,6 +36,7 @@ public class BeanASTTransformer extends BindableASTTransformation {
             , "handleInputProps"
             , "handleInputProps"
             , "println"
+            , "shouldTrace"
     ]
     static String RENAMED_PROPERTY_PREFIX = "_"
     static Class TARGET_ROOT_CLASS
